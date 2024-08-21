@@ -79,6 +79,33 @@ const AdminPage = () => {
         navigate('/home');
     };
 
+    const handleExport = async () => {
+        try {
+            const response = await fetch('/api/export-books', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'books.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } else {
+                alert('Excel dosyası indirilemedi.');
+            }
+        } catch (error) {
+            console.error('Export error:', error);
+            alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+        }
+    };
+
     return (
         <div className="admin-container">
             <header className="header">
@@ -122,6 +149,7 @@ const AdminPage = () => {
                 </div>
                 <div className="book-list">
                     <h2>Mevcut Kitaplar</h2>
+                    <button onClick={handleExport} className="export-btn">Kitapları Excel Olarak İndir</button>
                     {loading ? (
                         <p>Loading...</p>
                     ) : (
