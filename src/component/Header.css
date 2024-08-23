@@ -1,0 +1,150 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+.homepage-header {
+  background-color: #ffffff;
+  color: #0096be;
+  padding: 10px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.main-menu ul {
+  display: flex;
+  list-style: none;
+  margin-left: auto;
+}
+
+.main-menu .menu-item {
+  position: relative;
+  margin-left: 20px;
+}
+
+.main-menu .menu-item a {
+  color: #0096be;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.main-menu .menu-item a:hover {
+  color: #79973a;
+}
+
+.main-menu .menu-item .dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #576d82;
+  padding: 5px 0;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  min-width: 180px;
+}
+
+.main-menu .menu-item:hover .dropdown {
+  display: block;
+}
+
+.main-menu .dropdown li {
+  padding: 5px 15px;
+}
+
+.main-menu .dropdown li a {
+  color: white;
+  font-size: 0.8rem;
+}
+
+.auth-buttons .btn {
+  font-size: 1rem; 
+  padding: 10px 20px; 
+  border-radius: 5px;
+  background-color: #0096be;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  margin-left: 10px;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.auth-buttons .login-btn {
+  background-color: #0096be;
+}
+
+.auth-buttons .sign-up-btn {
+  background-color: #79973a;
+}
+
+.btn:hover {
+  background-color: #79973a;
+}
+
+@media (max-width: 1200px) {
+  .header-container {
+    padding: 0 10px;
+  }
+  
+  .main-menu {
+    display: none; 
+  }
+  
+  .auth-buttons .btn {
+    padding: 8px 16px; 
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .homepage-header {
+    padding: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .logo {
+    font-size: 1rem; 
+  }
+  
+  .main-menu {
+    display: none; 
+  }
+  
+  .auth-buttons .btn {
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+    padding: 10px;
+  }
+}

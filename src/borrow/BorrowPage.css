@@ -1,0 +1,143 @@
+.borrow-page {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.borrow-page-content {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin: auto;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.book-id {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.book-id span {
+    font-weight: bold;
+}
+
+.borrow-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.borrow-form label {
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+.borrow-form input {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #0096be;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background-color: #0077a4;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.modal-content ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.modal-content ul li {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.confirm-button, .close-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.confirm-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.confirm-button:hover {
+    background-color: #45a049;
+}
+
+.close-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.close-button:hover {
+    background-color: #e53935;
+}
+
+@media (max-width: 768px) {
+    .borrow-page-content {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .borrow-page-content {
+        padding: 10px;
+    }
+}

@@ -1,0 +1,43 @@
+.homepage-footer {
+  background-color: #0096be;
+  color: white;
+  padding: 20px 10px;
+  text-align: center;
+  position: relative;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section {
+  margin: 10px;
+}
+
+.footer-section h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.footer-section p {
+  font-size: 0.9rem;
+}
+
+.footer-section a {
+  color: white;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+.footer-section a:hover {
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  font-size: 0.8rem;
+  margin-top: 20px;
+}
