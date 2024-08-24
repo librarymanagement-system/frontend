@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./BorrowedBooksPage.css";
-import Hamburger from "../component/hamburger/hamburger.js"; // Adjusted path if needed
+import Hamburger from "../../component/hamburger/hamburger.js"; // Adjusted path if needed
 
 const BorrowedBooksPage = () => {
   const currentBorrowedBooks = [
@@ -42,7 +42,7 @@ const BorrowedBooksPage = () => {
       <Hamburger />
       <div className="borrowed-books-content">
         <h1>Ödünç Aldığınız Kitaplar</h1>
-        
+
         <section className="current-borrowed-books">
           <h2>Şu Anda Ödünç Aldığınız Kitaplar</h2>
           <div className="borrowed-books-list">
@@ -51,16 +51,24 @@ const BorrowedBooksPage = () => {
                 <img src={book.image} alt={book.title} className="book-image" />
                 <div className="book-info">
                   <h3>{book.title}</h3>
-                  <p><strong>Yazar:</strong> {book.author}</p>
-                  <p><strong>Tür:</strong> {book.genre}</p>
-                  <p><strong>Yayın Evi:</strong> {book.publisher}</p>
-                  <p><strong>Ödünç Alma Tarihi:</strong> {book.borrowedDate}</p>
+                  <p>
+                    <strong>Yazar:</strong> {book.author}
+                  </p>
+                  <p>
+                    <strong>Tür:</strong> {book.genre}
+                  </p>
+                  <p>
+                    <strong>Yayın Evi:</strong> {book.publisher}
+                  </p>
+                  <p>
+                    <strong>Ödünç Alma Tarihi:</strong> {book.borrowedDate}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </section>
-        
+
         <section className="past-borrowed-books">
           <h2>Geçmişte Ödünç Aldığınız Kitaplar</h2>
           <div className="borrowed-books-list">
@@ -69,16 +77,23 @@ const BorrowedBooksPage = () => {
                 <img src={book.image} alt={book.title} className="book-image" />
                 <div className="book-info">
                   <h3>{book.title}</h3>
-                  <p><strong>Yazar:</strong> {book.author}</p>
-                  <p><strong>Tür:</strong> {book.genre}</p>
-                  <p><strong>Yayın Evi:</strong> {book.publisher}</p>
-                  <p><strong>Ödünç Alma Tarihi:</strong> {book.borrowedDate}</p>
+                  <p>
+                    <strong>Yazar:</strong> {book.author}
+                  </p>
+                  <p>
+                    <strong>Tür:</strong> {book.genre}
+                  </p>
+                  <p>
+                    <strong>Yayın Evi:</strong> {book.publisher}
+                  </p>
+                  <p>
+                    <strong>Ödünç Alma Tarihi:</strong> {book.borrowedDate}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </section>
-        
       </div>
     </div>
   );

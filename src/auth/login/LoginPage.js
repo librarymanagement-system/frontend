@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../interceptor";
-import "./LoginPage.css";
+import api from "../../interceptor";
+import "../login/LoginPage.css";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");

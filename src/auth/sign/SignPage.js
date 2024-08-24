@@ -1,7 +1,7 @@
 // src/sign/SignPage.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../interceptor';
+import api from '../../interceptor';
 import './SignPage.css';
 
 const SignUpPage = () => {
