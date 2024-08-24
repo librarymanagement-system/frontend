@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Hamburger from "../../component/hamburger/hamburger.js"; // Adjust path if needed
+import Hamburger from "../../component/hamburger/hamburger.js"; 
 import "./profile.css";
 
 const ProfilePage = () => {
@@ -20,7 +20,6 @@ const ProfilePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
     console.log("Form data submitted:", formData);
   };
 
