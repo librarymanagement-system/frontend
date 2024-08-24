@@ -1,15 +1,31 @@
+// src/sign/SignPage.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import api from '../interceptor';
 import './SignPage.css';
 
 const SignUpPage = () => {
-  const [isim, setIsim] = useState("");
-  const [eposta, setEposta] = useState("");
-  const [sifre, setSifre] = useState("");
-  const [sifreOnay, setSifreOnay] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
+    try {
+      const response = await api.post('/api/register', {
+        name,
+        email,
+        username,
+        password,
+      });
+      console.log('Kayıt başarılı:', response.data);
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Kayıt hatası:', error.response ? error.response.data : error.message);
+      setErrorMessage('Kayıt yapılamadı. Lütfen bilgilerinizi kontrol edin.');
+    }
   };
 
   return (
@@ -22,44 +38,45 @@ const SignUpPage = () => {
       <div className="signup-container">
         <div className="signup-box">
           <h2>Kayıt Ol</h2>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
           <form onSubmit={handleSignUp}>
             <div className="input-group">
-              <label htmlFor="isim">İsim</label>
+              <label htmlFor="name">İsim</label>
               <input
                 type="text"
-                id="isim"
-                value={isim}
-                onChange={(e) => setIsim(e.target.value)}
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
             <div className="input-group">
-              <label htmlFor="eposta">E-posta</label>
+              <label htmlFor="email">E-posta</label>
               <input
                 type="email"
-                id="eposta"
-                value={eposta}
-                onChange={(e) => setEposta(e.target.value)}
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
             <div className="input-group">
-              <label htmlFor="sifre">Şifre</label>
+              <label htmlFor="username">Kullanıcı Adı</label>
               <input
-                type="password"
-                id="sifre"
-                value={sifre}
-                onChange={(e) => setSifre(e.target.value)}
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
             <div className="input-group">
-              <label htmlFor="sifreOnay">Şifreyi Onayla</label>
+              <label htmlFor="password">Şifre</label>
               <input
                 type="password"
-                id="sifreOnay"
-                value={sifreOnay}
-                onChange={(e) => setSifreOnay(e.target.value)}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>

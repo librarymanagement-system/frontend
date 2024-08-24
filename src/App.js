@@ -6,8 +6,8 @@ import SignPage from './sign/SignPage';
 import AdminPage from './admin/AdminPage';
 import BooksListPage from './booklist/BooksListPage';
 import BookDetailPage from './bookdetail/BookDetailPage';
-import BorrowPage from './borrow/BorrowPage';
 import { AuthProvider } from './AuthContext';
+import BorrowedBooksPage from "./borrowedbooks/BorrowedBooksPage";
 
 import './App.css';
 
@@ -22,7 +22,7 @@ const App = () => {
                     <Route path="/admin/*" element={<AdminPage />} />
                     <Route path="/books" element={<BooksListPage />} />
                     <Route path="/books/:id" element={<BookDetailPage />} />
-                    <Route path="/borrow/:id" element={<BorrowPage />} />
+                    <Route path="/borrowed-books" element={<BorrowedBooksPage />} />
                 </Routes>
             </Router>
         </AuthProvider>

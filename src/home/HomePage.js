@@ -5,8 +5,8 @@ import heroImage from "../assets/images/hero-image.jpg";
 import book1 from "../assets/images/book1.jpg";
 import book2 from "../assets/images/book2.jpg";
 import book3 from "../assets/images/book3.jpg";
-import Header from "../component/Header.js";
-import Footer from "../component/Footer.js";
+import Header from "../component/header/Header.js";
+import Footer from "../component/footer/Footer.js";
 
 const featuredBooks = [book1, book2, book3];
 

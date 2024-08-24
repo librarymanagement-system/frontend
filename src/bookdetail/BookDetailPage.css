@@ -1,25 +1,86 @@
+/* Genel Sayfa Düzeni */
 .book-detail-page {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 1200px;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #f0f4f8, #e0e7ec);
   padding: 20px;
+  box-sizing: border-box;
 }
 
+.header {
+  background-color: #ffffff;
+  padding: 15px 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0096be;
+}
+
+.hamburger-menu {
+  position: relative;
+}
+
+.hamburger-icon {
+  background-color: #0096be;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  width: 150px;
+  z-index: 1001;
+}
+
+.menu-dropdown a {
+  display: block;
+  padding: 10px;
+  color: #0096be;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.menu-dropdown a:hover {
+  background-color: #f0f4f8;
+}
+
+/* Kitap Detay İçeriği */
 .book-detail-content {
   display: flex;
-  max-width: 900px;
+  flex-direction: row;
   background-color: #ffffff;
   border-radius: 15px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  transition: transform 0.3s ease-in-out;
-  width: 100%;
-}
-
-.book-detail-content:hover {
-  transform: scale(1.02);
+  max-width: 100%;
+  margin: 100px auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .book-image {
@@ -62,6 +123,104 @@
   background-color: #79973a;
 }
 
+/* Modal Pencere Düzeni */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  position: relative;
+}
+
+.modal-content h2 {
+  font-size: 1.8rem;
+  color: #0096be;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.modal-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.modal-content li {
+  margin-bottom: 10px;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+
+.modal-content li:before {
+  content: "•";
+  color: #79973a;
+  font-size: 1.5rem;
+  padding-right: 8px;
+}
+
+.confirm-button, .close-button {
+  margin-top: 15px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.confirm-button {
+  background-color: #4caf50;
+  color: white;
+  margin-right: 10px;
+}
+
+.confirm-button:hover {
+  background-color: #45a049;
+}
+
+.close-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.close-button:hover {
+  background-color: #e53935;
+}
+
+.modal-content::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 6px;
+  background-color: #0096be;
+  border-radius: 3px;
+}
+
+/* Mobil Cihazlar için Düzenlemeler */
 @media (max-width: 768px) {
   .book-detail-content {
     flex-direction: column;

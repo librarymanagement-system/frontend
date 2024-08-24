@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "./BooksListPage.css";
-import Header from "../component/Header";
-import Footer from "../component/Footer";
+import Header from "../component/header/Header.js";
+import Footer from "../component/footer/Footer.js";
+import { useAuth } from "../AuthContext"; // AuthContext'i ekleyelim
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Toast stillerini ekleyelim
 
 const BooksListPage = () => {
   const [books, setBooks] = useState([]);
@@ -15,6 +18,7 @@ const BooksListPage = () => {
   });
 
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth(); // Kullanıcının oturum açıp açmadığını kontrol eden hook
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -147,7 +151,7 @@ const BooksListPage = () => {
           genre: "Tür 16",
           publisher: "Yayın Evi 16",
           image: "kitap16.jpg",
-        }
+        },
       ];
       setBooks(allBooks);
       setFilteredBooks(allBooks);
@@ -166,8 +170,10 @@ const BooksListPage = () => {
   useEffect(() => {
     const filterBooks = () => {
       const filtered = books.filter((book) =>
-        Object.keys(filters).every((key) =>
-          typeof book[key] === 'string' && book[key].toLowerCase().includes(filters[key].toLowerCase())
+        Object.keys(filters).every(
+          (key) =>
+            typeof book[key] === "string" &&
+            book[key].toLowerCase().includes(filters[key].toLowerCase())
         )
       );
       setFilteredBooks(filtered);
@@ -176,14 +182,20 @@ const BooksListPage = () => {
   }, [filters, books]);
 
   const handleDetailClick = (id) => {
-    navigate(`/books/${id}`);
+    if (isAuthenticated) {
+      navigate(`/books/${id}`); // Kullanıcı oturum açmışsa kitap detay sayfasına git
+    } else {
+      toast.warning("Lütfen giriş yapın. Yönlendiriliyorsunuz...");
+      setTimeout(() => {
+        navigate("/login"); // Oturum açmamışsa giriş yapma sayfasına git
+      }, 1000); // 3 saniye bekledikten sonra yönlendirme yap
+    }
   };
 
   return (
     <div className="books-list-page">
       <Header />
       <h2>Kütüphane</h2>
-
       <div className="filters">
         <div className="filter-group">
           <label htmlFor="title">Kitap ismi ile ara:</label>
@@ -230,7 +242,6 @@ const BooksListPage = () => {
           />
         </div>
       </div>
-
       <div className="books-grid">
         {filteredBooks.map((book) => (
           <div key={book.id} className="book-card">
@@ -244,6 +255,7 @@ const BooksListPage = () => {
         ))}
       </div>
       <Footer />
+      <ToastContainer /> {/* Toast mesajlarının gösterileceği konteyner */}
     </div>
   );
 };
