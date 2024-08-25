@@ -80,6 +80,7 @@
     display: flex;
     flex-direction: column;
 }
+
 /* Açıklama alanını daha uzun yaparak alt alta yerleştirme */
 .form-group textarea {
     width: 100%;
@@ -127,45 +128,44 @@
 .book-list table {
     width: 100%;
     border-collapse: collapse;
-  }
-  
-  .book-list th, .book-list td {
+}
+
+.book-list th, .book-list td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
-  }
+}
 
-  .book-list th {
+.book-list th {
     background-color: #f4f4f4;
-  }
-  
-  .book-list td {
+}
+
+.book-list td {
     vertical-align: top;
     word-wrap: break-word; /* Metnin hücre içinde kırılmasını sağlar */
     white-space: normal; /* Metnin satırlara sarmasını sağlar */
     max-width: 200px; /* Hücrenin genişliğini sınırlayarak metni düzenleyin */
     overflow-wrap: break-word; /* Taşan metni bir alt satıra geçirir */
-  }
-  
-  .book-list .book-image {
+}
+
+.book-list .book-image {
     width: 50px;
     height: 75px;
     object-fit: cover;
-  }
-  
+}
 
-
-  .book-list .remove-btn {
+.book-list .remove-btn {
     background-color: #f44336;
     color: white;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
-  }
-  
-  .book-list .remove-btn:hover {
+}
+
+.book-list .remove-btn:hover {
     background-color: #d32f2f;
-  }
+}
+
 .error-message {
     color: #e74c3c;
     margin-top: 10px;
@@ -187,6 +187,22 @@
 }
 
 /* Mobil uyumlu stil ayarları */
+@media (max-width: 1200px) {
+    .header {
+        padding: 15px;
+    }
+
+    .logo {
+        font-size: 1.4rem;
+    }
+
+   
+
+    .date-time {
+        font-size: 0.85rem;
+    }
+}
+
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
@@ -249,6 +265,6 @@
 
     .book-list th, .book-list td {
         font-size: 0.8rem;
-        padding: 8px;
+        padding: 6px;
     }
 }

@@ -118,15 +118,15 @@ const AdminPage = () => {
 
   const handleExport = async () => {
     try {
-      const response = await api.get("/api/export-books", {
-        responseType: "blob",
+      const response = await api.get("/api/books/export", {
+        responseType: "blob", // Excel dosyasının blob formatında alınacağını belirtir.
       });
-
+  
       if (response.status === 200) {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "books.xlsx");
+        link.setAttribute("download", "books.xlsx"); // Excel dosyasının adı
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -138,6 +138,7 @@ const AdminPage = () => {
       alert("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
+  
 
   return (
     <div className="admin-container">
