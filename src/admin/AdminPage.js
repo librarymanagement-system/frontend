@@ -1,14 +1,14 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./AdminPage.css";
-import api from '../interceptor';
+import api from "../interceptor";
 
 const AdminPage = () => {
   const [bookName, setBookName] = useState("");
   const [publisher, setPublisher] = useState("");
   const [author, setAuthor] = useState("");
   const [genre, setGenre] = useState("");
+  const [explanation, setExplanation] = useState("");
   const [bookImage, setBookImage] = useState(null);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,30 +18,18 @@ const AdminPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedBooks = JSON.parse(localStorage.getItem("books"));
-    if (storedBooks) {
-      setBooks(storedBooks);
-    }
-
-    const intervalId = setInterval(() => {
-      setDateTime(new Date().toLocaleString());
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
     const fetchBooks = async () => {
       setLoading(true);
       try {
-        const response = await api.get('/api/books/getAllBooks', {
+        const response = await api.get("/api/books/getAllBooks", {
           params: {
             page: 0,
             size: 15,
-            sort: 'id,asc'
-          }
+            sort: "id,asc",
+          },
         });
-        setBooks(response.data.content);
+        console.log("API yanıtı:", response.data); // Yanıtı kontrol et
+        setBooks(response.data.content || []); // Boş dizi ile başlat
       } catch (error) {
         console.error("Fetch books error:", error);
         setError("Kitaplar yüklenirken bir hata oluştu.");
@@ -51,6 +39,12 @@ const AdminPage = () => {
     };
 
     fetchBooks();
+
+    const intervalId = setInterval(() => {
+      setDateTime(new Date().toLocaleString());
+    }, 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleAddBook = async () => {
@@ -60,34 +54,54 @@ const AdminPage = () => {
     }
 
     const formData = new FormData();
-    formData.append('title', bookName);
-    author.split(",").forEach(a => formData.append('authors', a.trim()));
-    publisher.split(",").forEach(p => formData.append('publishers', p.trim()));
-    genre.split(",").forEach(g => formData.append('genres', g.trim()));
-    formData.append('file', bookImage);
+    formData.append("title", bookName);
+    formData.append("explanation", explanation);
+    author.split(",").forEach((a) => formData.append("authors", a.trim()));
+    publisher
+      .split(",")
+      .forEach((p) => formData.append("publishers", p.trim()));
+    genre.split(",").forEach((g) => formData.append("genres", g.trim()));
+    formData.append("file", bookImage);
 
     try {
-      const response = await api.post('/api/books/addBook', formData);
+      const response = await api.post("/api/books/addBook", formData);
       if (response.status !== 200) {
-        throw new Error(`Kitap ekleme başarısız: ${response.data.message || 'Bilinmeyen hata'}`);
+        throw new Error(
+          `Kitap ekleme başarısız: ${
+            response.data.message || "Bilinmeyen hata"
+          }`
+        );
       }
 
       const addedBook = response.data;
-      setBooks(prevBooks => [...prevBooks, addedBook]);
+      setBooks((prevBooks) => [...prevBooks, addedBook]);
       clearInputs();
       alert("Kitap başarıyla eklendi!");
-
     } catch (error) {
       console.error("Kitap ekleme hatası:", error);
-      setError(`Kitap ekleme başarısız: ${error.response?.data?.message || error.message}`);
-      alert(`Kitap ekleme başarısız: ${error.response?.data?.message || error.message}`);
+      setError(
+        `Kitap ekleme başarısız: ${
+          error.response?.data?.message || error.message
+        }`
+      );
+      alert(
+        `Kitap ekleme başarısız: ${
+          error.response?.data?.message || error.message
+        }`
+      );
     }
   };
 
   const handleRemoveBook = async (bookId) => {
-    // Kitap kaldırma işlemi için uygun API endpoint'i ekleyebilirsiniz.
-    const updatedBooks = books.filter((book) => book.id !== bookId);
-    setBooks(updatedBooks);
+    try {
+      // Kitap kaldırma işlemi için uygun API endpoint'i
+      await api.delete(`/api/books/${bookId}`);
+      const updatedBooks = books.filter((book) => book.id !== bookId);
+      setBooks(updatedBooks);
+    } catch (error) {
+      console.error("Kitap kaldırma hatası:", error);
+      alert("Kitap kaldırma başarısız.");
+    }
   };
 
   const clearInputs = () => {
@@ -95,24 +109,28 @@ const AdminPage = () => {
     setPublisher("");
     setAuthor("");
     setGenre("");
+    setExplanation("");
     setBookImage(null);
   };
 
   const handleLogout = () => {
-    navigate("/home");
+    navigate("/");
   };
 
   const handleExport = async () => {
     try {
-      const response = await api.get("/api/export-books", { responseType: 'blob' });
+      const response = await api.get("/api/export-books", {
+        responseType: "blob",
+      });
 
       if (response.status === 200) {
         const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
-        link.setAttribute('download', 'books.xlsx');
+        link.setAttribute("download", "books.xlsx");
         document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
       } else {
         alert("Excel dosyası indirilemedi.");
       }
@@ -130,7 +148,7 @@ const AdminPage = () => {
         </Link>
         <div className="header-right">
           <div className="date-time">{dateTime}</div>
-          <button className="logout-button" onClick={handleLogout}>
+          <button className="logout-button" to="/" onClick={handleLogout}>
             Çıkış
           </button>
         </div>
@@ -163,6 +181,11 @@ const AdminPage = () => {
               onChange={(e) => setGenre(e.target.value)}
               placeholder="Tür"
             />
+            <textarea
+              value={explanation}
+              onChange={(e) => setExplanation(e.target.value)}
+              placeholder="Açıklama"
+            />
             <input
               type="file"
               onChange={(e) => setBookImage(e.target.files[0])}
@@ -188,36 +211,47 @@ const AdminPage = () => {
                   <th>Yayın Evi</th>
                   <th>Yazar</th>
                   <th>Tür</th>
+                  <th>Açıklama</th>
                   <th>Durum</th>
                   <th>İşlem</th>
                 </tr>
               </thead>
               <tbody>
-                {books.map((book) => (
-                  <tr key={book.id}>
-                    <td>
-                      <img
-                        src={`data:image/png;base64,${book.base64image}`}
-                        alt={book.title}
-                        className="book-image"
-                      />
-                    </td>
-                    <td>{book.title}</td>
-                    <td>{book.publishers.map(p => p.name).join(", ")}</td>
-                    <td>{book.authors.map(a => `${a.firstName} ${a.lastName}`).join(", ")}</td>
-                    <td>{book.genres.map(g => g.name).join(", ")}</td>
-                    <td>{book.status}</td>
-                    <td>
-                      <button
-                        onClick={() => handleRemoveBook(book.id)}
-                        className="remove-btn"
-                      >
-                        Kaldır
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+  {books && books.length > 0 ? (
+    books.map((book) => (
+      <tr key={book.id}>
+        <td>
+          <img
+            src={book.base64image ? `data:image/png;base64,${book.base64image}` : "/default-image.png"}
+            alt={book.title}
+            className="book-image"
+          />
+        </td>
+        <td>{book.title}</td>
+        <td>{(book.publishers || []).map((p) => p.name).join(", ")}</td>
+        <td>
+          {(book.authors || []).map((a) => `${a.firstName} ${a.lastName}`).join(", ")}
+        </td>
+        <td>{(book.genres || []).map((g) => g.name).join(", ")}</td>
+        <td>{book.explanation}</td>
+        <td>{book.status}</td>
+        <td>
+          <button
+            onClick={() => handleRemoveBook(book.id)}
+            className="remove-btn"
+          >
+            Kaldır
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="8">Henüz kitap bulunmamaktadır.</td>
+    </tr>
+  )}
+</tbody>
+
             </table>
           )}
         </div>

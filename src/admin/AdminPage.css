@@ -80,6 +80,17 @@
     display: flex;
     flex-direction: column;
 }
+/* Açıklama alanını daha uzun yaparak alt alta yerleştirme */
+.form-group textarea {
+    width: 100%;
+    height: 100px; /* Metni rahatça gösterebilmek için yeterli yükseklik */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    resize: vertical; /* Yüksekliği kullanıcı tarafından ayarlanabilir */
+}
 
 .form-group input, .form-group button {
     width: 100%; /* Form elemanlarını tam genişlikte yapar */
@@ -87,10 +98,14 @@
     margin-bottom: 10px;
     border-radius: 4px;
     font-size: 1rem;
+    box-sizing: border-box; /* Yükseklik ve genişlik hesaplamaları için */
 }
 
 .form-group input {
     border: 1px solid #ddd;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Taşan metinler için '...' */
+    white-space: nowrap; /* Satır kaydırmayı engeller */
 }
 
 .form-group button {
@@ -111,45 +126,46 @@
 
 .book-list table {
     width: 100%;
-    border-collapse: collapse; /* Daha iyi görünüm için */
-}
-
-.book-list th, .book-list td {
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
+    border-collapse: collapse;
+  }
+  
+  .book-list th, .book-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
     text-align: left;
-    white-space: nowrap; /* Uzun metinlerin kaymasını engelle */
-}
+  }
 
-.book-list th {
-    background-color: #0096be;
-    color: #fff;
-}
-
-.book-list td {
-    vertical-align: middle; /* Metin ve resimlerin ortalanmasını sağlar */
-}
-
-.book-image {
-    width: 80px;
-    height: 100px;
+  .book-list th {
+    background-color: #f4f4f4;
+  }
+  
+  .book-list td {
+    vertical-align: top;
+    word-wrap: break-word; /* Metnin hücre içinde kırılmasını sağlar */
+    white-space: normal; /* Metnin satırlara sarmasını sağlar */
+    max-width: 200px; /* Hücrenin genişliğini sınırlayarak metni düzenleyin */
+    overflow-wrap: break-word; /* Taşan metni bir alt satıra geçirir */
+  }
+  
+  .book-list .book-image {
+    width: 50px;
+    height: 75px;
     object-fit: cover;
-}
+  }
+  
 
-.remove-btn {
-    padding: 8px 12px;
-    background-color: #e74c3c;
-    color: #fff;
+
+  .book-list .remove-btn {
+    background-color: #f44336;
+    color: white;
     border: none;
-    border-radius: 4px;
+    padding: 5px 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.remove-btn:hover {
-    background-color: #c0392b;
-}
-
+  }
+  
+  .book-list .remove-btn:hover {
+    background-color: #d32f2f;
+  }
 .error-message {
     color: #e74c3c;
     margin-top: 10px;
