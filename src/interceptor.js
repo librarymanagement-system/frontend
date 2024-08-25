@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://libmansysv2.onrender.com',
+  baseURL: 'https://libmansysv2.onrender.com/',
   timeout: 30000, // 
 });
 
@@ -13,9 +13,16 @@ api.interceptors.request.use(
     if (token && !noAuthEndpoints.includes(config.url)) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
+    
 
-    config.headers['Accept'] = 'application/json';
-    config.headers['Content-Type'] = 'application/json';
+    // Remove or conditionally set these headers based on the request type
+    if (!config.data instanceof FormData) {
+      config.headers['Accept'] = 'application/json';
+      config.headers['Content-Type'] = 'application/json';
+    } else {
+      // Let the browser set it when FormData is used
+      delete config.headers['Content-Type'];
+    }
 
     return config;
   },
@@ -23,5 +30,6 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 
 export default api;

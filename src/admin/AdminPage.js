@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./AdminPage.css";
+import api from '../interceptor';
 
 const AdminPage = () => {
   const [bookName, setBookName] = useState("");
@@ -28,27 +29,41 @@ const AdminPage = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleAddBook = () => {
-    if (!bookName || !publisher || !author || !genre || !bookImage) {
-      alert("Lütfen tüm alanları doldurun.");
-      return;
-    }
+    const handleAddBook = async () => {
+        if (!bookName || !publisher || !author || !genre || !bookImage) {
+            alert("Please fill in all fields.");
+            return;
+        }
 
-    const newBook = {
-      id: (books.length + 1).toString(),
-      name: bookName,
-      publisher,
-      author,
-      genre,
-      status: "active",
-      image: URL.createObjectURL(bookImage), 
+        const formData = new FormData();
+        formData.append('title', bookName);
+        author.split(",").forEach(a => formData.append('authors', a.trim()));
+        publisher.split(",").forEach(p => formData.append('publishers', p.trim()));
+        genre.split(",").forEach(g => formData.append('genres', g.trim()));
+        formData.append('file', bookImage);
+
+        try {
+            const response = await api.post('/api/books/addBook', formData);
+            // Check if the response was successful based on status code
+            if (response.status !== 200) {
+                throw new Error(`Failed to add book: ${response.data.message || 'Unknown error'}`);
+            }
+
+            const addedBook = response.data;
+            setBooks(prevBooks => [...prevBooks, addedBook]);
+            clearInputs();
+            alert("Book added successfully!");
+
+        } catch (error) {
+            console.error("Add book error:", error);
+            setError(`Failed to add book: ${error.response?.data?.message || error.message}`);
+            alert(`Failed to add book: ${error.response?.data?.message || error.message}`);
+        }
     };
 
-    const updatedBooks = [...books, newBook];
-    setBooks(updatedBooks);
-    localStorage.setItem("books", JSON.stringify(updatedBooks)); 
-    clearInputs();
-  };
+
+
+
 
   const handleRemoveBook = (bookId) => {
     const updatedBooks = books.filter((book) => book.id !== bookId);
