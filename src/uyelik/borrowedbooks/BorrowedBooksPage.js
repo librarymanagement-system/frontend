@@ -1,57 +1,98 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "./BorrowedBooksPage.css";
-import Hamburger from "../../component/hamburger/hamburger.js"; 
+import React, { useState, useEffect } from "react";
+import Hamburger from "../../component/hamburger/hamburger.js";
 import Modal from "react-modal";
+import api from "../../interceptor";
+import "./BorrowedBooksPage.css";
 
 Modal.setAppElement("#root");
 
 const BorrowedBooksPage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [currentBorrowedBooks, setCurrentBorrowedBooks] = useState([]);
+  const [pastBorrowedBooks, setPastBorrowedBooks] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const currentBorrowedBooks = [
-    {
-      id: 1,
-      title: "Kitap 1",
-      author: "Yazar 1",
-      genre: "Tür 1",
-      publisher: "Yayın Evi 1",
-      image: "kitap1.jpg",
-      borrowedDate: "2024-08-01",
-    },
-  ];
+  const userId = localStorage.getItem("userId");
 
-  const pastBorrowedBooks = [
-    {
-      id: 2,
-      title: "Kitap 2",
-      author: "Yazar 2",
-      genre: "Tür 2",
-      publisher: "Yayın Evi 2",
-      image: "kitap2.jpg",
-      borrowedDate: "2024-07-15",
-    },
-    {
-      id: 3,
-      title: "Kitap 3",
-      author: "Yazar 3",
-      genre: "Tür 3",
-      publisher: "Yayın Evi 3",
-      image: "kitap3.jpg",
-      borrowedDate: "2024-06-10",
-    },
-  ];
+  useEffect(() => {
+    if (!userId) {
+      setErrorMessage("User ID is not available. Please log in again.");
+      return;
+    }
+
+    const fetchUserLoans = async () => {
+      try {
+        const response = await api.get(`/api/users/getUserLoans/${userId}`);
+        const loans = response.data;
+
+        const current = [];
+        const past = [];
+
+        loans.forEach((loan) => {
+          const bookData = {
+            id: loan.id,
+            title: loan.book.title,
+            author: "",
+            genre: "",
+            publisher: "",
+            image: `data:image/jpeg;base64,${loan.book.base64image}`,
+            borrowedDate: loan.loanDate,
+            status: loan.status,
+          };
+
+          if (loan.status === "ACTIVE" || loan.status === "LATE") {
+            current.push(bookData);
+          } else if (loan.status === "COMPLETED" || loan.status === "LOST") {
+            past.push(bookData);
+          }
+        });
+
+        setCurrentBorrowedBooks(current);
+        setPastBorrowedBooks(past);
+      } catch (error) {
+        console.error("Error fetching user loans:", error);
+        setErrorMessage("Ödünç alınan kitaplar yüklenirken bir hata oluştu.");
+      }
+    };
+
+    fetchUserLoans();
+  }, [userId]);
 
   const handleReturnBook = (book) => {
     setSelectedBook(book);
     setModalIsOpen(true);
   };
 
-  const confirmReturn = () => {
-    // Burada kitap iade işlemi yapılacak
-    setModalIsOpen(false);
-    setSelectedBook(null);
+  const confirmReturn = async () => {
+    if (!selectedBook) return;
+
+    try {
+
+      if (!userId || !selectedBook.id) {
+        setErrorMessage("Invalid user or book ID.");
+        return;
+      }
+
+      console.log(`Returning book with ID ${selectedBook.id} for user ${userId}`);
+      const response = await api.post(`/api/loans/return/${userId}/${selectedBook.id}`);
+
+      console.log("API Response:", response.data);
+      setCurrentBorrowedBooks((prevBooks) =>
+        prevBooks.filter((book) => book.id !== selectedBook.id)
+      );
+
+      setPastBorrowedBooks((prevBooks) => [
+        ...prevBooks,
+        { ...selectedBook, status: "COMPLETED" },
+      ]);
+
+      setModalIsOpen(false);
+      setSelectedBook(null);
+    } catch (error) {
+      console.error("Error returning book:", error);
+      setErrorMessage("Kitap iade edilirken bir hata oluştu.");
+    }
   };
 
   const cancelReturn = () => {
@@ -63,56 +104,74 @@ const BorrowedBooksPage = () => {
     <div className="borrowed-books-page">
       <Hamburger />
       <div className="borrowed-books-content">
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+
         <section className="current-borrowed-books">
           <h2>Şu Anda Ödünç Aldığınız Kitaplar</h2>
           <div className="borrowed-books-list">
-            {currentBorrowedBooks.map((book) => (
-              <div key={book.id} className="book-item">
-                <img src={book.image} alt={book.title} className="book-image" />
-                <div className="book-info">
-                  <h3>{book.title}</h3>
-                  <p>
-                    <strong>Yazar:</strong> {book.author}
-                  </p>
-                  <p>
-                    <strong>Tür:</strong> {book.genre}
-                  </p>
-                  <p>
-                    <strong>Yayın Evi:</strong> {book.publisher}
-                  </p>
-                  <p>
-                    <strong>Ödünç Alma Tarihi:</strong> {book.borrowedDate}
-                  </p>
-                  <button onClick={() => handleReturnBook(book)} className="return-button">İade Et</button>
+            {currentBorrowedBooks.length > 0 ? (
+              currentBorrowedBooks.map((book) => (
+                <div key={book.id} className="book-item">
+                  <img src={book.image} alt={book.title} className="book-image" />
+                  <div className="book-info">
+                    <h3>{book.title}</h3>
+                    <p>
+                      <strong>Yazar:</strong> {book.author}
+                    </p>
+                    <p>
+                      <strong>Tür:</strong> {book.genre}
+                    </p>
+                    <p>
+                      <strong>Yayın Evi:</strong> {book.publisher}
+                    </p>
+                    <p>
+                      <strong>Ödünç Alma Tarihi:</strong> {book.borrowedDate}
+                    </p>
+                    <p>
+                      <strong>Durum:</strong> {book.status}
+                    </p>
+                    <button onClick={() => handleReturnBook(book)} className="return-button">
+                      {book.status === "LATE" ? "Gecikmiş Kitabı İade Et" : "İade Et"}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>Şu anda ödünç aldığınız kitap yok.</p>
+            )}
           </div>
         </section>
 
         <section className="past-borrowed-books">
           <h2>Geçmişte Ödünç Aldığınız Kitaplar</h2>
           <div className="borrowed-books-list">
-            {pastBorrowedBooks.map((book) => (
-              <div key={book.id} className="book-item">
-                <img src={book.image} alt={book.title} className="book-image" />
-                <div className="book-info">
-                  <h3>{book.title}</h3>
-                  <p>
-                    <strong>Yazar:</strong> {book.author}
-                  </p>
-                  <p>
-                    <strong>Tür:</strong> {book.genre}
-                  </p>
-                  <p>
-                    <strong>Yayın Evi:</strong> {book.publisher}
-                  </p>
-                  <p>
-                    <strong>Ödünç Alma Tarihi:</strong> {book.borrowedDate}
-                  </p>
+            {pastBorrowedBooks.length > 0 ? (
+              pastBorrowedBooks.map((book) => (
+                <div key={book.id} className="book-item">
+                  <img src={book.image} alt={book.title} className="book-image" />
+                  <div className="book-info">
+                    <h3>{book.title}</h3>
+                    <p>
+                      <strong>Yazar:</strong> {book.author}
+                    </p>
+                    <p>
+                      <strong>Tür:</strong> {book.genre}
+                    </p>
+                    <p>
+                      <strong>Yayın Evi:</strong> {book.publisher}
+                    </p>
+                    <p>
+                      <strong>Ödünç Alma Tarihi:</strong> {book.borrowedDate}
+                    </p>
+                    <p>
+                      <strong>Durum:</strong> {book.status}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>Geçmişte ödünç aldığınız kitap yok.</p>
+            )}
           </div>
         </section>
       </div>
