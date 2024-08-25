@@ -16,13 +16,25 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/api/authenticate", {
+      const authResponse = await api.post("/api/authenticate", {
         username,
         password,
       });
-      console.log("Giriş başarılı:", response.data);
-      localStorage.setItem("token", response.data.token);
-      navigate(from, { replace: true });
+
+      console.log("Giriş başarılı:", authResponse.data);
+      const token = authResponse.data.token;
+      const userId = authResponse.data.id;
+
+      localStorage.setItem("token", token);
+
+      const userDetailsResponse = await api.get(`/api/users/getUserDetails/${userId}`);
+      const userRole = userDetailsResponse.data.role;
+
+      if (userRole === "ADMIN") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       console.error(
         "Giriş hatası:",
@@ -35,6 +47,7 @@ const LoginPage = () => {
       );
     }
   };
+
 
   return (
     <div className="login-page">
