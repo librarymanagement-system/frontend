@@ -1,3 +1,4 @@
+/* Genel stil ayarları */
 .admin-container {
     padding: 20px;
     background-color: #f5f5f5;
@@ -5,6 +6,7 @@
     position: relative;
     min-height: 100vh; 
     box-sizing: border-box;
+    overflow-x: hidden; /* Yatay kaydırmayı engelle */
 }
 
 .header {
@@ -61,8 +63,9 @@
 }
 
 .admin-content {
-    margin-top: 20px;
+    margin-top: 35px;
     box-sizing: border-box;
+    padding-top: 55px; /* Başlığın header'dan yeterince uzakta olması için */
 }
 
 .form-container {
@@ -78,20 +81,22 @@
     flex-direction: column;
 }
 
-.form-group input {
+.form-group input, .form-group button {
+    width: 100%; /* Form elemanlarını tam genişlikte yapar */
     padding: 10px;
     margin-bottom: 10px;
-    border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
 }
 
+.form-group input {
+    border: 1px solid #ddd;
+}
+
 .form-group button {
-    padding: 10px;
     background-color: #0096be;
     color: #fff;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -101,27 +106,34 @@
 }
 
 .book-list {
-    background-color: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow-x: auto; 
+    overflow-x: auto; /* Tabloyu yatay olarak kaydırılabilir yapar */
 }
 
 .book-list table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: collapse; /* Daha iyi görünüm için */
 }
 
 .book-list th, .book-list td {
-    padding: 12px;
+    padding: 15px;
     border-bottom: 1px solid #ddd;
     text-align: left;
+    white-space: nowrap; /* Uzun metinlerin kaymasını engelle */
 }
 
 .book-list th {
     background-color: #0096be;
     color: #fff;
+}
+
+.book-list td {
+    vertical-align: middle; /* Metin ve resimlerin ortalanmasını sağlar */
+}
+
+.book-image {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
 }
 
 .remove-btn {
@@ -142,6 +154,7 @@
     color: #e74c3c;
     margin-top: 10px;
 }
+
 .export-btn {
     padding: 10px 15px;
     background-color: #28a745;
@@ -157,20 +170,12 @@
     background-color: #218838;
 }
 
-.book-image {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 4px;
-}
-
-/* Keep the rest of your existing styles */
-
-
+/* Mobil uyumlu stil ayarları */
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
         align-items: flex-start;
+        padding: 10px;
     }
 
     .logo {
@@ -183,38 +188,51 @@
         justify-content: space-between;
     }
 
-    .date-time, .logout-button {
-        margin-right: 0;
+    .date-time {
+        font-size: 0.8rem;
     }
 
     .logout-button {
-        width: 100%; 
+        padding: 8px 10px;
+        font-size: 0.9rem;
+        width: 100%;
         text-align: center;
+    }
+
+    .form-container h1 {
+        font-size: 1.2rem;
+    }
+
+    .book-list th, .book-list td {
+        font-size: 0.9rem;
+        padding: 8px;
     }
 }
 
 @media (max-width: 480px) {
     .header {
-        padding: 10px;
+        padding: 8px;
     }
 
     .logo {
-        font-size: 1.2rem;
+        font-size: 1rem;
+    }
+
+    .date-time {
+        font-size: 0.7rem;
     }
 
     .logout-button {
-        padding: 6px 10px;
-    }
-
-    .form-group input, .form-group button {
+        padding: 6px 8px;
         font-size: 0.8rem;
     }
 
-    .book-list table {
-        font-size: 0.8rem;
+    .form-container h1 {
+        font-size: 1rem;
     }
 
     .book-list th, .book-list td {
+        font-size: 0.8rem;
         padding: 8px;
     }
 }

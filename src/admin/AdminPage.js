@@ -29,46 +29,64 @@ const AdminPage = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-    const handleAddBook = async () => {
-        if (!bookName || !publisher || !author || !genre || !bookImage) {
-            alert("Please fill in all fields.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('title', bookName);
-        author.split(",").forEach(a => formData.append('authors', a.trim()));
-        publisher.split(",").forEach(p => formData.append('publishers', p.trim()));
-        genre.split(",").forEach(g => formData.append('genres', g.trim()));
-        formData.append('file', bookImage);
-
-        try {
-            const response = await api.post('/api/books/addBook', formData);
-            // Check if the response was successful based on status code
-            if (response.status !== 200) {
-                throw new Error(`Failed to add book: ${response.data.message || 'Unknown error'}`);
-            }
-
-            const addedBook = response.data;
-            setBooks(prevBooks => [...prevBooks, addedBook]);
-            clearInputs();
-            alert("Book added successfully!");
-
-        } catch (error) {
-            console.error("Add book error:", error);
-            setError(`Failed to add book: ${error.response?.data?.message || error.message}`);
-            alert(`Failed to add book: ${error.response?.data?.message || error.message}`);
-        }
+  useEffect(() => {
+    const fetchBooks = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get('/api/books/getAllBooks', {
+          params: {
+            page: 0,
+            size: 15,
+            sort: 'id,asc'
+          }
+        });
+        setBooks(response.data.content);
+      } catch (error) {
+        console.error("Fetch books error:", error);
+        setError("Kitaplar yüklenirken bir hata oluştu.");
+      } finally {
+        setLoading(false);
+      }
     };
 
+    fetchBooks();
+  }, []);
 
+  const handleAddBook = async () => {
+    if (!bookName || !publisher || !author || !genre || !bookImage) {
+      alert("Lütfen tüm alanları doldurun.");
+      return;
+    }
 
+    const formData = new FormData();
+    formData.append('title', bookName);
+    author.split(",").forEach(a => formData.append('authors', a.trim()));
+    publisher.split(",").forEach(p => formData.append('publishers', p.trim()));
+    genre.split(",").forEach(g => formData.append('genres', g.trim()));
+    formData.append('file', bookImage);
 
+    try {
+      const response = await api.post('/api/books/addBook', formData);
+      if (response.status !== 200) {
+        throw new Error(`Kitap ekleme başarısız: ${response.data.message || 'Bilinmeyen hata'}`);
+      }
 
-  const handleRemoveBook = (bookId) => {
+      const addedBook = response.data;
+      setBooks(prevBooks => [...prevBooks, addedBook]);
+      clearInputs();
+      alert("Kitap başarıyla eklendi!");
+
+    } catch (error) {
+      console.error("Kitap ekleme hatası:", error);
+      setError(`Kitap ekleme başarısız: ${error.response?.data?.message || error.message}`);
+      alert(`Kitap ekleme başarısız: ${error.response?.data?.message || error.message}`);
+    }
+  };
+
+  const handleRemoveBook = async (bookId) => {
+    // Kitap kaldırma işlemi için uygun API endpoint'i ekleyebilirsiniz.
     const updatedBooks = books.filter((book) => book.id !== bookId);
     setBooks(updatedBooks);
-    localStorage.setItem("books", JSON.stringify(updatedBooks)); 
   };
 
   const clearInputs = () => {
@@ -85,22 +103,15 @@ const AdminPage = () => {
 
   const handleExport = async () => {
     try {
-      const response = await fetch("/api/export-books", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await api.get("/api/export-books", { responseType: 'blob' });
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "books.xlsx";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+      if (response.status === 200) {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'books.xlsx');
+        document.body.appendChild(link);
+        link.click();
       } else {
         alert("Excel dosyası indirilemedi.");
       }
@@ -185,15 +196,15 @@ const AdminPage = () => {
                   <tr key={book.id}>
                     <td>
                       <img
-                        src={book.image}
-                        alt={book.name}
+                        src={`data:image/png;base64,${book.base64image}`}
+                        alt={book.title}
                         className="book-image"
                       />
                     </td>
-                    <td>{book.name}</td>
-                    <td>{book.publisher}</td>
-                    <td>{book.author}</td>
-                    <td>{book.genre}</td>
+                    <td>{book.title}</td>
+                    <td>{book.publishers.map(p => p.name).join(", ")}</td>
+                    <td>{book.authors.map(a => `${a.firstName} ${a.lastName}`).join(", ")}</td>
+                    <td>{book.genres.map(g => g.name).join(", ")}</td>
                     <td>{book.status}</td>
                     <td>
                       <button
