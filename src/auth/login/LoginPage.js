@@ -26,6 +26,7 @@ const LoginPage = () => {
       const userId = authResponse.data.id;
 
       localStorage.setItem("token", token);
+      localStorage.setItem("userId", userId);
 
       const userDetailsResponse = await api.get(`/api/users/getUserDetails/${userId}`);
       const userRole = userDetailsResponse.data.role;
