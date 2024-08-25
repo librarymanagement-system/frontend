@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./BorrowedBooksPage.css";
-import Hamburger from "../../component/hamburger/hamburger.js"; // Adjusted path if needed
+import Hamburger from "../../component/hamburger/hamburger.js"; 
+import Modal from "react-modal";
+
+Modal.setAppElement("#root");
 
 const BorrowedBooksPage = () => {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+
   const currentBorrowedBooks = [
     {
       id: 1,
@@ -37,12 +43,26 @@ const BorrowedBooksPage = () => {
     },
   ];
 
+  const handleReturnBook = (book) => {
+    setSelectedBook(book);
+    setModalIsOpen(true);
+  };
+
+  const confirmReturn = () => {
+    // Burada kitap iade işlemi yapılacak
+    setModalIsOpen(false);
+    setSelectedBook(null);
+  };
+
+  const cancelReturn = () => {
+    setModalIsOpen(false);
+    setSelectedBook(null);
+  };
+
   return (
     <div className="borrowed-books-page">
       <Hamburger />
       <div className="borrowed-books-content">
-        <h1>Ödünç Aldığınız Kitaplar</h1>
-
         <section className="current-borrowed-books">
           <h2>Şu Anda Ödünç Aldığınız Kitaplar</h2>
           <div className="borrowed-books-list">
@@ -63,6 +83,7 @@ const BorrowedBooksPage = () => {
                   <p>
                     <strong>Ödünç Alma Tarihi:</strong> {book.borrowedDate}
                   </p>
+                  <button onClick={() => handleReturnBook(book)} className="return-button">İade Et</button>
                 </div>
               </div>
             ))}
@@ -95,6 +116,21 @@ const BorrowedBooksPage = () => {
           </div>
         </section>
       </div>
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={cancelReturn}
+        contentLabel="Onay Modal"
+        className="modal"
+        overlayClassName="modal-overlay"
+      >
+        <h2>Kitap İade İşlemi</h2>
+        <p>
+          {selectedBook ? `"${selectedBook.title}" kitabını iade etmek istediğinize emin misiniz?` : ""}
+        </p>
+        <button onClick={confirmReturn} className="modal-confirm-button">Onaylıyorum</button>
+        <button onClick={cancelReturn} className="modal-cancel-button">İptal</button>
+      </Modal>
     </div>
   );
 };

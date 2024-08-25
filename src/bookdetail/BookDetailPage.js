@@ -1,42 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import api from "../interceptor";
 import "./BookDetailPage.css";
 
 const BookDetailPage = () => {
   const { id } = useParams();
+  const [book, setBook] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const books = [
-    {
-      id: 1,
-      title: "Kitap 1",
-      author: "Yazar 1",
-      genre: "Tür 1",
-      publisher: "Yayın Evi 1",
-      image: "kitap1.jpg",
-    },
-    // Diğer kitaplar burada olabilir
-  ];
+  const fetchBookDetails = async () => {
+    try {
+      console.log('API URL:', `/api/books/getBookById/${id}`);
+      const response = await api.get(`/api/books/getBookById/${id}`);
+      console.log('API Yanıtı:', response.data); 
+      if (response.data) {
+        setBook(response.data);
+      } else {
+        setBook(null);
+      }
+    } catch (error) {
+      console.error("Fetch book details error:", error);
+      setBook(null);
+    }
+  };
 
-  const borrowedBooks = JSON.parse(localStorage.getItem("borrowedBooks")) || [];
-
-  const book = books.find((book) => book.id === parseInt(id, 10));
-
-  if (!book) {
-    return <div>Kitap bulunamadı.</div>;
-  }
+  useEffect(() => {
+    fetchBookDetails();
+  }, [id]);
 
   const handleBorrowClick = () => {
     setIsModalOpen(true);
   };
 
-  const handleConfirm = () => {
-    const updatedBorrowedBooks = [...borrowedBooks, book];
-    localStorage.setItem("borrowedBooks", JSON.stringify(updatedBorrowedBooks));
-    setIsModalOpen(false);
-    navigate("/borrowed-books");
+  const handleConfirm = async () => {
+    try {
+      await api.post("/api/loans/borrow", { bookId: book.id });
+      navigate("/borrowed-books");
+    } catch (error) {
+      console.error("Borrow book error:", error);
+    }
   };
 
   const handleCloseModal = () => {
@@ -46,6 +50,10 @@ const BookDetailPage = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  if (!book) {
+    return <div>Kitap bulunamadı.</div>;
+  }
 
   return (
     <div className="book-detail-page">
@@ -77,17 +85,33 @@ const BookDetailPage = () => {
       </header>
 
       <div className="book-detail-content">
-        <img src={book.image} alt={book.title} className="book-image" />
+        <img
+          src={
+            book.base64image
+              ? `data:image/png;base64,${book.base64image}`
+              : "/default-image.png"
+          }
+          alt={book.title}
+          className="book-image"
+        />
         <div className="book-info">
           <h1>{book.title}</h1>
           <p>
-            <strong>Yazar:</strong> {book.author}
+            <strong>Yazar:</strong>{" "}
+            {book.authors
+              .map((author) => `${author.firstName} ${author.lastName}`)
+              .join(", ")}
           </p>
           <p>
-            <strong>Tür:</strong> {book.genre}
+            <strong>Tür:</strong>{" "}
+            {book.genres.map((genre) => genre.name).join(", ")}
           </p>
           <p>
-            <strong>Yayın Evi:</strong> {book.publisher}
+            <strong>Yayın Evi:</strong>{" "}
+            {book.publishers.map((publisher) => publisher.name).join(", ")}
+          </p>
+          <p>
+            <strong>Açıklama:</strong> {book.explanation}
           </p>
           <button className="borrow-button" onClick={handleBorrowClick}>
             Ödünç Al

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../interceptor";
 import "./BooksListPage.css";
 import Header from "../component/header/Header.js";
@@ -17,6 +17,7 @@ const BooksListPage = () => {
 
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const location = useLocation(); // Current location (for redirecting back)
 
   const fetchBooks = async () => {
     setLoading(true);
@@ -53,10 +54,11 @@ const BooksListPage = () => {
     } else {
       toast.warning("Lütfen giriş yapın. Yönlendiriliyorsunuz...");
       setTimeout(() => {
-        navigate("/login");
+        navigate("/login", { state: { from: `/books/${id}` } });
       }, 1000);
     }
   };
+  
 
   return (
     <div className="books-list-page">

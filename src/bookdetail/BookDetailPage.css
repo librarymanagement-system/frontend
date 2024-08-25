@@ -85,7 +85,7 @@
 
 .book-image {
   width: 300px;
-  height: auto;
+  height: 450px;
   object-fit: cover;
   border-radius: 15px 0 0 15px;
 }
@@ -120,7 +120,7 @@
 }
 
 .borrow-button:hover {
-  background-color: #79973a;
+  background-color: #007bb5;
 }
 
 /* Modal Pencere Düzeni */
@@ -228,6 +228,7 @@
 
   .book-image {
     width: 100%;
+    height: auto;
     border-radius: 15px 15px 0 0;
   }
 

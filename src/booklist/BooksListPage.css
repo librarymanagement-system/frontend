@@ -124,29 +124,30 @@ h2 {
   font-size: 0.8rem;
 }
 .se-area {
-  background-color: #007bb5;
+  background-color: #007bb5; /* Temiz bir mavi ton */
   border: none;
   color: white;
-  padding: 4px; 
+  padding: 12px 24px; /* Butonun daha büyük görünmesi için padding */
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 12px;
-  margin: 4px;
+  font-size: 16px; /* Daha büyük yazı boyutu */
+  margin: 10px;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 8px; /* Köşeleri yuvarlatma */
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .se-area:hover {
-  background-color: #79973a;
-  transform: scale(1.05);
+  background-color: #005f8b; /* Hover durumunda daha koyu mavi */
+  transform: scale(1.05); /* Hover durumunda butonun büyümesini sağlama */
 }
 
 .se-area:active {
-  background-color: #6a6a6a;
-  transform: scale(0.95);
+  background-color: #004a70; /* Active durumunda daha koyu mavi */
+  transform: scale(0.95); /* Tıklanma durumunda butonun küçülmesini sağlama */
 }
+
 
 
 

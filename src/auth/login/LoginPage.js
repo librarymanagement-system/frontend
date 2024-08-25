@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import api from "../../interceptor";
 import "../login/LoginPage.css";
 
@@ -7,6 +7,11 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const from = location.state?.from || "/books";
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,7 +22,7 @@ const LoginPage = () => {
       });
       console.log("Giriş başarılı:", response.data);
       localStorage.setItem("token", response.data.token);
-      window.location.href = "/books";
+      navigate(from, { replace: true });
     } catch (error) {
       console.error(
         "Giriş hatası:",
@@ -36,7 +41,7 @@ const LoginPage = () => {
       <header className="header">
         <Link to="/home" className="logo">
           Elysian Kitap Evi
-        </Link>{" "}
+        </Link>
       </header>
       <div className="login-container">
         <div className="login-box">

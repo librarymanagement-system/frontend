@@ -26,9 +26,6 @@ const Hamburger = ({ logoText }) => {
             <Link to="/borrowed-books" onClick={toggleMenu}>
               Ödünç Aldıklarım
             </Link>
-            <Link to="/returns" onClick={toggleMenu}>
-              İadeler
-            </Link>
             <Link to="/logout" onClick={toggleMenu}>
               Çıkış Yap
             </Link>
