@@ -10,11 +10,13 @@ const BookDetailPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
+  const userId = localStorage.getItem("userId");
+
   const fetchBookDetails = async () => {
     try {
-      console.log('API URL:', `/api/books/getBookById/${id}`);
+      console.log("API URL:", `/api/books/getBookById/${id}`);
       const response = await api.get(`/api/books/getBookById/${id}`);
-      console.log('API Yanıtı:', response.data); 
+      console.log("API Yanıtı:", response.data);
       if (response.data) {
         setBook(response.data);
       } else {
@@ -36,12 +38,45 @@ const BookDetailPage = () => {
 
   const handleConfirm = async () => {
     try {
-      await api.post("/api/loans/borrow", { bookId: book.id });
-      navigate("/borrowed-books");
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+  
+      if (!userId) {
+        console.error("Kullanıcı ID'si bulunamadı");
+        alert("Lütfen giriş yapın.");
+        navigate("/login");
+        return;
+      }
+  
+      if (!token) {
+        console.error("Token bulunamadı");
+        alert("Token bulunamadı. Lütfen tekrar giriş yapın.");
+        navigate("/login");
+        return;
+      }
+  
+      const response = await api.post(`/api/loans/borrow`, null, {
+        params: {
+          userId: userId,
+          bookId: id,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (response.status === 200) {
+        navigate("/borrowed-books");
+      } else {
+        console.error("Kitap ödünç alma hatası:", response.data.message);
+        alert(response.data.message || "Kitap ödünç alma işlemi başarısız.");
+      }
     } catch (error) {
-      console.error("Borrow book error:", error);
+      console.error("Kitap ödünç alma hatası:", error.response ? error.response.data : error.message);
+      alert("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
+  
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -94,6 +129,7 @@ const BookDetailPage = () => {
           alt={book.title}
           className="book-image"
         />
+
         <div className="book-info">
           <h1>{book.title}</h1>
           <p>
@@ -109,6 +145,9 @@ const BookDetailPage = () => {
           <p>
             <strong>Yayın Evi:</strong>{" "}
             {book.publishers.map((publisher) => publisher.name).join(", ")}
+          </p>
+          <p>
+            <strong>Durum:</strong> {book.status}
           </p>
           <p>
             <strong>Açıklama:</strong> {book.explanation}
