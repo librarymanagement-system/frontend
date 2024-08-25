@@ -1,9 +1,8 @@
-
 import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'https://libmansysv2.onrender.com/',
-  timeout: 60000, // 
+  timeout: 60000,
 });
 
 api.interceptors.request.use(
@@ -15,13 +14,10 @@ api.interceptors.request.use(
       config.headers['Authorization'] = `Bearer ${token}`;
     }
     
-
-    // Remove or conditionally set these headers based on the request type
-    if (!config.data instanceof FormData) {
+    if (!(config.data instanceof FormData)) {
       config.headers['Accept'] = 'application/json';
       config.headers['Content-Type'] = 'application/json';
     } else {
-      // Let the browser set it when FormData is used
       delete config.headers['Content-Type'];
     }
 
@@ -31,6 +27,5 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
 
 export default api;

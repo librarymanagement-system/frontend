@@ -28,8 +28,8 @@ const AdminPage = () => {
             sort: "id,asc",
           },
         });
-        console.log("API yanıtı:", response.data); // Yanıtı kontrol et
-        setBooks(response.data.content || []); // Boş dizi ile başlat
+        console.log("API yanıtı:", response.data);
+        setBooks(response.data.content || []);
       } catch (error) {
         console.error("Fetch books error:", error);
         setError("Kitaplar yüklenirken bir hata oluştu.");
@@ -94,7 +94,6 @@ const AdminPage = () => {
 
   const handleRemoveBook = async (bookId) => {
     try {
-      // Kitap kaldırma işlemi için uygun API endpoint'i
       await api.delete(`/api/books/${bookId}`);
       const updatedBooks = books.filter((book) => book.id !== bookId);
       setBooks(updatedBooks);
@@ -217,41 +216,40 @@ const AdminPage = () => {
                 </tr>
               </thead>
               <tbody>
-  {books && books.length > 0 ? (
-    books.map((book) => (
-      <tr key={book.id}>
-        <td>
-          <img
-            src={book.base64image ? `data:image/png;base64,${book.base64image}` : "/default-image.png"}
-            alt={book.title}
-            className="book-image"
-          />
-        </td>
-        <td>{book.title}</td>
-        <td>{(book.publishers || []).map((p) => p.name).join(", ")}</td>
-        <td>
-          {(book.authors || []).map((a) => `${a.firstName} ${a.lastName}`).join(", ")}
-        </td>
-        <td>{(book.genres || []).map((g) => g.name).join(", ")}</td>
-        <td>{book.explanation}</td>
-        <td>{book.status}</td>
-        <td>
-          <button
-            onClick={() => handleRemoveBook(book.id)}
-            className="remove-btn"
-          >
-            Kaldır
-          </button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="8">Henüz kitap bulunmamaktadır.</td>
-    </tr>
-  )}
-</tbody>
-
+                {books && books.length > 0 ? (
+                  books.map((book) => (
+                    <tr key={book.id}>
+                      <td>
+                        <img
+                          src={book.base64image ? `data:image/png;base64,${book.base64image}` : "/default-image.png"}
+                          alt={book.title}
+                          className="book-image"
+                        />
+                      </td>
+                      <td>{book.title}</td>
+                      <td>{(book.publishers || []).map((p) => p.name).join(", ")}</td>
+                      <td>
+                        {(book.authors || []).map((a) => `${a.firstName} ${a.lastName}`).join(", ")}
+                      </td>
+                      <td>{(book.genres || []).map((g) => g.name).join(", ")}</td>
+                      <td>{book.explanation}</td>
+                      <td>{book.status}</td>
+                      <td>
+                        <button
+                          onClick={() => handleRemoveBook(book.id)}
+                          className="remove-btn"
+                        >
+                          Kaldır
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8">Henüz kitap bulunmamaktadır.</td>
+                  </tr>
+                )}
+              </tbody>
             </table>
           )}
         </div>
