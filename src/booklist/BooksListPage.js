@@ -22,7 +22,7 @@ const BooksListPage = () => {
           searchTerm,
           page: 0,
           size: 15,
-          sort: "id,asc",
+          sort: "id,asc"
         },
       });
       setBooks(response.data.content || []);
