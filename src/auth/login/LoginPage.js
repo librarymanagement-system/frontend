@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import api from "../../interceptor";
+import { login, getUserDetails } from '../../services/authService'; 
 import "../login/LoginPage.css";
 
 const LoginPage = () => {
@@ -16,20 +16,14 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const authResponse = await api.post("/api/authenticate", {
-        username,
-        password,
-      });
-
-      console.log("Giriş başarılı:", authResponse.data);
-      const token = authResponse.data.token;
-      const userId = authResponse.data.id;
+      const authResponse = await login(username, password);
+      const { token, id: userId } = authResponse;
 
       localStorage.setItem("token", token);
       localStorage.setItem("userId", userId);
 
-      const userDetailsResponse = await api.get(`/api/users/getUserDetails/${userId}`);
-      const userRole = userDetailsResponse.data.role;
+      const userDetailsResponse = await getUserDetails(userId);
+      const userRole = userDetailsResponse.role;
 
       if (userRole === "ADMIN") {
         navigate("/admin", { replace: true });
@@ -37,25 +31,15 @@ const LoginPage = () => {
         navigate(from, { replace: true });
       }
     } catch (error) {
-      console.error(
-        "Giriş hatası:",
-        error.response ? error.response.data : error.message
-      );
-      setErrorMessage(
-        error.response && error.response.data
-          ? `Giriş hatası: ${error.response.data.message}`
-          : "Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin."
-      );
+      console.error("Giriş hatası:", error);
+      setErrorMessage("Giriş işlemi başarısız oldu. Lütfen kullanıcı adı ve şifrenizi kontrol edin.");
     }
   };
-
 
   return (
     <div className="login-page">
       <header className="header">
-        <Link to="/" className="logo">
-          Elysian Kitap Evi
-        </Link>
+        <Link to="/" className="logo">Elysian Kitap Evi</Link>
       </header>
       <div className="login-container">
         <div className="login-box">
@@ -82,11 +66,9 @@ const LoginPage = () => {
                 required
               />
             </div>
-            <button type="submit" className="btn">
-              Giriş Yap
-            </button>
+            <button type="submit" className="btn">Giriş Yap</button>
             <p className="signup-link">
-              Hesabınız yok mu? <a href="/sign-up">Kayıt Ol</a>
+              Hesabınız yok mu? <Link to="/sign-up">Kayıt Ol</Link>
             </p>
           </form>
         </div>

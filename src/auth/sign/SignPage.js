@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../../interceptor';
+import { signUp } from '../../services/authService'; 
 import './SignPage.css';
 
 const SignUpPage = () => {
@@ -14,26 +14,18 @@ const SignUpPage = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post('/api/register', {
-        name,
-        email,
-        username,
-        password,
-      });
-      console.log('Kayıt başarılı:', response.data);
+      await signUp(name, email, username, password);
       navigate('/login');
     } catch (error) {
-      console.error('Kayıt hatası:', error.response ? error.response.data : error.message);
-      setErrorMessage('Kayıt yapılamadı. Lütfen bilgilerinizi kontrol edin.');
+      console.error('Kayıt hatası:', error);
+      setErrorMessage('Kayıt yapılamadı. Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.');
     }
   };
 
   return (
     <div className="signup-page">
       <header className="header">
-        <Link to="/" className="logo">
-          Elysian Kitap Evi
-        </Link>
+        <Link to="/" className="logo">Elysian Kitap Evi</Link>
       </header>
       <div className="signup-container">
         <div className="signup-box">
@@ -80,9 +72,7 @@ const SignUpPage = () => {
                 required
               />
             </div>
-            <button type="submit" className="btn">
-              Kayıt Ol
-            </button>
+            <button type="submit" className="btn">Kayıt Ol</button>
             <p className="login-link">
               Zaten bir hesabınız var mı? <Link to="/login">Giriş Yap</Link>
             </p>
