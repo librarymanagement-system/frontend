@@ -15,7 +15,7 @@ body {
   color: #0096be;
   padding: 10px 0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  position: relative;
   width: 100%;
   top: 0;
   left: 0;
