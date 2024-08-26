@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <header className="homepage-header">
       <div className="header-container">
-        <h1 className="logo">Elysian Kitap Evi</h1>
+        <h1 to="/" className="logo">Elysian Kitap Evi</h1>
         <nav className="main-menu">
           <ul>
             <li className="menu-item">
