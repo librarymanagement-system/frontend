@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../interceptor";
 import "./BooksListPage.css";
 import Header from "../component/header/Header.js";
@@ -10,17 +10,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 const BooksListPage = () => {
   const [books, setBooks] = useState([]);
-  const [filteredBooks, setFilteredBooks] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const location = useLocation(); // Current location (for redirecting back)
 
   const fetchBooks = async () => {
-    setLoading(true);
     try {
       const response = await api.get("/api/books/searchSingle", {
         params: {
@@ -31,12 +26,9 @@ const BooksListPage = () => {
         },
       });
       setBooks(response.data.content || []);
-      setFilteredBooks(response.data.content || []);
     } catch (error) {
-      console.error("Fetch books error:", error);
-      setError("Kitaplar yüklenirken bir hata oluştu.");
-    } finally {
-      setLoading(false);
+      console.error("Kitaplar yüklenirken hata oluştu:", error);
+      toast.error("Kitaplar yüklenirken bir hata oluştu.");
     }
   };
 
@@ -58,7 +50,6 @@ const BooksListPage = () => {
       }, 1000);
     }
   };
-  
 
   return (
     <div className="books-list-page">
@@ -66,7 +57,7 @@ const BooksListPage = () => {
       <h2>Kütüphane</h2>
       <div className="filters">
         <div className="filter-group">
-          <label htmlFor="search">Arama</label>
+          <label htmlFor="search"></label>
           <input
             type="text"
             id="search"
@@ -78,42 +69,34 @@ const BooksListPage = () => {
         <button className="se-area" onClick={fetchBooks}>Ara</button>
       </div>
       <div className="books-grid">
-        {loading ? (
-          <p>Yükleniyor...</p>
-        ) : error ? (
-          <p>{error}</p>
-        ) : filteredBooks.length > 0 ? (
-          filteredBooks.map((book) => (
-            <div key={book.id} className="book-card">
-              <img
-                src={
-                  book.base64image
-                    ? `data:image/png;base64,${book.base64image}`
-                    : "/default-image.png"
-                }
-                alt={book.title}
-                className="book-image"
-              />
-              <div className="book-details">
-                <h2>{book.title}</h2>
-                <p>
-                  {(book.authors || [])
-                    .map((a) => `${a.firstName} ${a.lastName}`)
-                    .join(", ")}
-                </p>
-                <p>{(book.genres || []).map((g) => g.name).join(", ")}</p>
-                <p className="publisher">
-                  {(book.publishers || []).map((p) => p.name).join(", ")}
-                </p>
-                <button onClick={() => handleDetailClick(book.id)} className="view-btn">
-                  Detay
-                </button>
-              </div>
+        {books.map((book) => (
+          <div key={book.id} className="book-card">
+            <img
+              src={
+                book.base64image
+                  ? `data:image/png;base64,${book.base64image}`
+                  : "/default-image.png"
+              }
+              alt={book.title}
+              className="book-image"
+            />
+            <div className="book-details">
+              <h2>{book.title}</h2>
+              <p>
+                {(book.authors || [])
+                  .map((a) => `${a.firstName} ${a.lastName}`)
+                  .join(", ")}
+              </p>
+              <p>{(book.genres || []).map((g) => g.name).join(", ")}</p>
+              <p className="publisher">
+                {(book.publishers || []).map((p) => p.name).join(", ")}
+              </p>
+              <button onClick={() => handleDetailClick(book.id)} className="view-btn">
+                Detay
+              </button>
             </div>
-          ))
-        ) : (
-          <p>Kitap bulunamadı.</p>
-        )}
+          </div>
+        ))}
       </div>
       <Footer />
       <ToastContainer />

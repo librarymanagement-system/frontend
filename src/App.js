@@ -8,7 +8,7 @@ import BooksListPage from "./booklist/BooksListPage";
 import BookDetailPage from "./bookdetail/BookDetailPage";
 import { AuthProvider } from "./AuthContext";
 import BorrowedBooksPage from "./uyelik/borrowedbooks/BorrowedBooksPage";
-import ProfilePage from "./uyelik/profile/profile";  // Fix case for ProfilePage
+import ProfilePage from "./uyelik/profile/profile";  
 
 import "./App.css";
 

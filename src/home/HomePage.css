@@ -10,6 +10,7 @@ body {
   color: white;
 }
 
+
 .homepage-header {
   background-color: #ffffff;
   color: #0096be;
@@ -84,17 +85,12 @@ body {
 }
 
 .auth-buttons .btn {
-  font-size: 1rem; 
-  padding: 10px 20px; 
+  font-size: 1rem;
+  padding: 10px 20px;
   border-radius: 5px;
   background-color: #0096be;
   color: white;
-  padding: 6px 12px;
   border: none;
-  border-radius: 5px;
-  font-size: 0.8rem;
-  margin-left: 10px;
-  text-decoration: none;
   text-align: center;
   transition: background-color 0.3s ease;
 }
@@ -154,10 +150,6 @@ body {
   background-color: #79973a;
 }
 
-.featured-books {
-  padding: 40px 20px;
-}
-
 .featured-books h2 {
   text-align: center;
   font-size: 2rem;
@@ -165,23 +157,43 @@ body {
 }
 
 .books-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
   justify-content: center;
-  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-.book-card {
-  background: #f5f5f5;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 10px;
-  overflow: hidden;
-  max-width: 250px;
-}
-
-.book-image {
-  width: 100%;
+.book-image-home {
+  max-width: 150px;
   height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  display: block;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .books-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .book-image-home {
+    max-width: 120px;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .books-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  
+  .book-image-home {
+    max-width: 100px;
+    margin-bottom: 10px;
+  }
 }
 
 .activities {
@@ -284,14 +296,15 @@ body {
   }
   
   .cta-button {
-    padding: 8px 16px; }
+    padding: 8px 16px; 
+  }
   
   .featured-books h2 {
     font-size: 1.5rem; 
   }
   
-  .book-card {
-    max-width: 200px; 
+  .book-image-home {
+    max-width: 120px; 
   }
   
   .activities h2 {
@@ -338,14 +351,15 @@ body {
   }
   
   .cta-button {
-    padding: 10px; }
+    padding: 10px; 
+  }
   
   .featured-books h2 {
     font-size: 1.2rem;
   }
   
-  .book-card {
-    max-width: 100%; 
+  .book-image-home {
+    max-width: 100px; 
   }
   
   .activities h2 {

@@ -38,13 +38,12 @@ const HomePage = () => {
           <h2>Öne Çıkan Kitaplar</h2>
           <div className="books-container">
             {featuredBooks.map((book, index) => (
-              <div key={index} className="book-card">
-                <img
-                  src={book}
-                  alt={`Öne Çıkan Kitap ${index + 1}`}
-                  className="book-image"
-                />
-              </div>
+              <img
+                key={index}
+                src={book}
+                alt={`Öne Çıkan Kitap ${index + 1}`}
+                className="book-image-home"
+              />
             ))}
           </div>
         </section>

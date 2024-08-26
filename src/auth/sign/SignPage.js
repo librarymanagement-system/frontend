@@ -1,6 +1,5 @@
-// src/sign/SignPage.js
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../../interceptor';
 import './SignPage.css';
 
@@ -10,6 +9,7 @@ const SignUpPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ const SignUpPage = () => {
         password,
       });
       console.log('Kayıt başarılı:', response.data);
-      window.location.href = '/login';
+      navigate('/login');
     } catch (error) {
       console.error('Kayıt hatası:', error.response ? error.response.data : error.message);
       setErrorMessage('Kayıt yapılamadı. Lütfen bilgilerinizi kontrol edin.');
@@ -31,9 +31,9 @@ const SignUpPage = () => {
   return (
     <div className="signup-page">
       <header className="header">
-        <Link to="/home" className="logo">
+        <Link to="/" className="logo">
           Elysian Kitap Evi
-        </Link>{" "}
+        </Link>
       </header>
       <div className="signup-container">
         <div className="signup-box">
@@ -84,7 +84,7 @@ const SignUpPage = () => {
               Kayıt Ol
             </button>
             <p className="login-link">
-              Zaten bir hesabınız var mı? <a href="/login">Giriş Yap</a>
+              Zaten bir hesabınız var mı? <Link to="/login">Giriş Yap</Link>
             </p>
           </form>
         </div>

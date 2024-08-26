@@ -1,14 +1,16 @@
-/* Genel Sayfa Düzeni */
 .book-detail-page {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  max-width: 1200px;
   min-height: 100vh;
-  padding: 20px;
   box-sizing: border-box;
+}
+
+.book-detail-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin: 100px auto;
+  padding: 0 20px;
 }
 
 .header {
@@ -69,7 +71,6 @@
   background-color: #f0f4f8;
 }
 
-/* Kitap Detay İçeriği */
 .book-detail-content {
   display: flex;
   flex-direction: row;
@@ -77,32 +78,32 @@
   border-radius: 15px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  max-width: 100%;
-  margin: 100px auto;
+  max-width: 80%;
+  margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
 }
 
-.book-image {
-  width: 300px;
-  height: 450px;
-  object-fit: cover;
+.book-image-detail {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
   border-radius: 15px 0 0 15px;
 }
 
-.book-info {
+.book-info-detail {
   padding: 30px;
   flex: 1;
   color: #333;
 }
 
-.book-info h1 {
+.book-info-detail h1 {
   font-size: 2rem;
   margin-bottom: 15px;
   color: #1a1a1a;
 }
 
-.book-info p {
+.book-info-detail p {
   margin: 10px 0;
   font-size: 1.1rem;
 }
@@ -123,7 +124,6 @@
   background-color: #007bb5;
 }
 
-/* Modal Pencere Düzeni */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -178,7 +178,8 @@
   padding-right: 8px;
 }
 
-.confirm-button, .close-button {
+.confirm-button,
+.close-button {
   margin-top: 15px;
   padding: 12px 24px;
   border: none;
@@ -220,42 +221,37 @@
   border-radius: 3px;
 }
 
-/* Mobil Cihazlar için Düzenlemeler */
 @media (max-width: 768px) {
   .book-detail-content {
     flex-direction: column;
+    max-width: 90%;
+    margin-top: 36px;
   }
 
-  .book-image {
-    width: 100%;
-    height: auto;
-    border-radius: 15px 15px 0 0;
+  .book-image-detail {
+    max-width: 100%;
   }
 
-  .book-info {
+  .book-info-detail {
     padding: 20px;
-  }
-
-  .book-info h1 {
-    font-size: 1.5rem;
-  }
-
-  .book-info p {
-    font-size: 1rem;
-  }
-
-  .borrow-button {
-    padding: 10px 20px;
-    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
-  .book-info h1 {
+  .book-detail-content {
+    max-width: 95%;
+    margin-top: 36px;
+  }
+
+  .book-image-detail {
+    max-width: 100%;
+  }
+
+  .book-info-detail h1 {
     font-size: 1.2rem;
   }
 
-  .book-info p {
+  .book-info-detail p {
     font-size: 0.9rem;
   }
 

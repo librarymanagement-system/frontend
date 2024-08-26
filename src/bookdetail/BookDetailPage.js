@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../interceptor";
 import "./BookDetailPage.css";
+import Footer from "../component/footer/Footer.js";
 
 const BookDetailPage = () => {
   const { id } = useParams();
@@ -93,7 +94,7 @@ const BookDetailPage = () => {
   return (
     <div className="book-detail-page">
       <header className="header">
-        <Link to="/home" className="logo">
+        <Link to="/" className="logo">
           Elysian Kitap Evi
         </Link>
         <div className="hamburger-menu">
@@ -119,42 +120,44 @@ const BookDetailPage = () => {
         </div>
       </header>
 
-      <div className="book-detail-content">
-        <img
-          src={
-            book.base64image
-              ? `data:image/png;base64,${book.base64image}`
-              : "/default-image.png"
-          }
-          alt={book.title}
-          className="book-image"
-        />
+      <div className="book-detail-wrapper">
+        <div className="book-detail-content">
+          <img
+            src={
+              book.base64image
+                ? `data:image/png;base64,${book.base64image}`
+                : "/default-image.png"
+            }
+            alt={book.title}
+            className="book-image-detail"
+          />
 
-        <div className="book-info">
-          <h1>{book.title}</h1>
-          <p>
-            <strong>Yazar:</strong>{" "}
-            {book.authors
-              .map((author) => `${author.firstName} ${author.lastName}`)
-              .join(", ")}
-          </p>
-          <p>
-            <strong>Tür:</strong>{" "}
-            {book.genres.map((genre) => genre.name).join(", ")}
-          </p>
-          <p>
-            <strong>Yayın Evi:</strong>{" "}
-            {book.publishers.map((publisher) => publisher.name).join(", ")}
-          </p>
-          <p>
-            <strong>Durum:</strong> {book.status}
-          </p>
-          <p>
-            <strong>Açıklama:</strong> {book.explanation}
-          </p>
-          <button className="borrow-button" onClick={handleBorrowClick}>
-            Ödünç Al
-          </button>
+          <div className="book-info-detail">
+            <h1>{book.title}</h1>
+            <p>
+              <strong>Yazar:</strong>{" "}
+              {book.authors
+                .map((author) => `${author.firstName} ${author.lastName}`)
+                .join(", ")}
+            </p>
+            <p>
+              <strong>Tür:</strong>{" "}
+              {book.genres.map((genre) => genre.name).join(", ")}
+            </p>
+            <p>
+              <strong>Yayın Evi:</strong>{" "}
+              {book.publishers.map((publisher) => publisher.name).join(", ")}
+            </p>
+            <p>
+              <strong>Durum:</strong> {book.status}
+            </p>
+            <p>
+              <strong>Açıklama:</strong> {book.explanation}
+            </p>
+            <button className="borrow-button" onClick={handleBorrowClick}>
+              Ödünç Al
+            </button>
+          </div>
         </div>
       </div>
 
@@ -187,6 +190,8 @@ const BookDetailPage = () => {
           </div>
         </div>
       )}
+
+      <Footer />
     </div>
   );
 };

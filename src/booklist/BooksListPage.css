@@ -1,7 +1,5 @@
 .books-list-page {
   background-color: white;
-  padding: 0 20px;
-  padding-bottom: 60px;
   position: relative;
 }
 
@@ -14,13 +12,16 @@ h2 {
 
 .filters {
   display: flex;
-  justify-content: center;
+  flex-direction: column; 
+  align-items: center;
   margin-bottom: 20px;
 }
 
 .filters .filter-group {
-  flex: 1 1 auto;
+  width: 100%;
   max-width: 500px;
+  display: flex;
+  align-items: center; 
 }
 
 .filters label {
@@ -38,6 +39,7 @@ h2 {
   font-size: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: border-color 0.3s, box-shadow 0.3s;
+  margin-right: 10px; 
 }
 
 .filters input:focus {
@@ -46,10 +48,34 @@ h2 {
   box-shadow: 0 0 8px rgba(0, 123, 181, 0.5);
 }
 
+.se-area {
+  background-color: #007bb5;
+  margin-top: 10px;
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.se-area:hover {
+  background-color: #005f8b;
+  transform: scale(1.05);
+}
+
+.se-area:active {
+  background-color: #004a70;
+}
+
 .books-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+  margin-bottom: 20px;
 }
 
 .book-card {
@@ -68,8 +94,8 @@ h2 {
 }
 
 .book-card img {
-  width: 60%;
-  height: auto;
+  width: 80%; 
+  height: 200px; 
   border-bottom: 2px solid #ddd;
   margin: 0 auto;
   display: block;
@@ -123,56 +149,40 @@ h2 {
   padding: 6px 12px;
   font-size: 0.8rem;
 }
-.se-area {
-  background-color: #007bb5; /* Temiz bir mavi ton */
-  border: none;
-  color: white;
-  padding: 12px 24px; /* Butonun daha büyük görünmesi için padding */
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px; /* Daha büyük yazı boyutu */
-  margin: 10px;
-  cursor: pointer;
-  border-radius: 8px; /* Köşeleri yuvarlatma */
-  transition: background-color 0.3s ease, transform 0.2s ease;
+
+@media (min-width: 768px) {
+  .filters {
+    flex-direction: row; 
+    justify-content: center;
+  }
+
+  .filters .filter-group {
+    margin-bottom: 0;
+    margin-right: 10px; 
+    width: auto;
+    flex: 1;
+  }
+
+  .se-area {
+    width: auto; 
+    margin-top: 10px;
+  }
 }
 
-.se-area:hover {
-  background-color: #005f8b; /* Hover durumunda daha koyu mavi */
-  transform: scale(1.05); /* Hover durumunda butonun büyümesini sağlama */
+@media (max-width: 1200px) {
+  .books-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-.se-area:active {
-  background-color: #004a70; /* Active durumunda daha koyu mavi */
-  transform: scale(0.95); /* Tıklanma durumunda butonun küçülmesini sağlama */
-}
-
-
-
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 20px;
-  background-color: #f1f1f1;
-  border-top: 1px solid #ddd;
-}
-
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .books-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .books-grid {
     grid-template-columns: 1fr;
-  }
-
-  .filters input {
-    max-width: 100%;
   }
 }

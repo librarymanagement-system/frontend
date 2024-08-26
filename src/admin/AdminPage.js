@@ -28,7 +28,6 @@ const AdminPage = () => {
             sort: "id,asc",
           },
         });
-        console.log("API yanıtı:", response.data);
         setBooks(response.data.content || []);
       } catch (error) {
         console.error("Fetch books error:", error);
@@ -49,54 +48,47 @@ const AdminPage = () => {
 
   const handleAddBook = async () => {
     if (!bookName || !publisher || !author || !genre || !bookImage) {
-      alert("Lütfen tüm alanları doldurun.");
+      setError("Lütfen tüm alanları doldurun.");
       return;
     }
 
     const formData = new FormData();
     formData.append("title", bookName);
     formData.append("explanation", explanation);
-    author.split(",").forEach((a) => formData.append("authors", a.trim()));
+    author
+      .split(",")
+      .map((a) => a.trim())
+      .forEach((a) => formData.append("authors", a));
     publisher
       .split(",")
-      .forEach((p) => formData.append("publishers", p.trim()));
-    genre.split(",").forEach((g) => formData.append("genres", g.trim()));
+      .map((p) => p.trim())
+      .forEach((p) => formData.append("publishers", p));
+    genre
+      .split(",")
+      .map((g) => g.trim())
+      .forEach((g) => formData.append("genres", g));
     formData.append("file", bookImage);
 
     try {
       const response = await api.post("/api/books/addBook", formData);
-      if (response.status !== 200) {
-        throw new Error(
-          `Kitap ekleme başarısız: ${
-            response.data.message || "Bilinmeyen hata"
-          }`
-        );
+      if (response.status === 200) {
+        const addedBook = response.data;
+        setBooks((prevBooks) => [...prevBooks, addedBook]);
+        clearInputs();
+        alert("Kitap başarıyla eklendi!");
+      } else {
+        throw new Error(response.data.message || "Bilinmeyen hata");
       }
-
-      const addedBook = response.data;
-      setBooks((prevBooks) => [...prevBooks, addedBook]);
-      clearInputs();
-      alert("Kitap başarıyla eklendi!");
     } catch (error) {
       console.error("Kitap ekleme hatası:", error);
-      setError(
-        `Kitap ekleme başarısız: ${
-          error.response?.data?.message || error.message
-        }`
-      );
-      alert(
-        `Kitap ekleme başarısız: ${
-          error.response?.data?.message || error.message
-        }`
-      );
+      setError(error.response?.data?.message || error.message);
     }
   };
 
   const handleRemoveBook = async (bookId) => {
     try {
       await api.delete(`/api/books/${bookId}`);
-      const updatedBooks = books.filter((book) => book.id !== bookId);
-      setBooks(updatedBooks);
+      setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
     } catch (error) {
       console.error("Kitap kaldırma hatası:", error);
       alert("Kitap kaldırma başarısız.");
@@ -119,14 +111,14 @@ const AdminPage = () => {
   const handleExport = async () => {
     try {
       const response = await api.get("/api/books/export", {
-        responseType: "blob", // Excel dosyasının blob formatında alınacağını belirtir.
+        responseType: "blob",
       });
-  
+
       if (response.status === 200) {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "books.xlsx"); // Excel dosyasının adı
+        link.setAttribute("download", "books.xlsx");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -138,7 +130,6 @@ const AdminPage = () => {
       alert("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
-  
 
   return (
     <div className="admin-container">
@@ -148,7 +139,7 @@ const AdminPage = () => {
         </Link>
         <div className="header-right">
           <div className="date-time">{dateTime}</div>
-          <button className="logout-button" to="/" onClick={handleLogout}>
+          <button className="logout-button" onClick={handleLogout}>
             Çıkış
           </button>
         </div>
@@ -217,22 +208,32 @@ const AdminPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {books && books.length > 0 ? (
+                {books.length > 0 ? (
                   books.map((book) => (
                     <tr key={book.id}>
                       <td>
                         <img
-                          src={book.base64image ? `data:image/png;base64,${book.base64image}` : "/default-image.png"}
+                          src={
+                            book.base64image
+                              ? `data:image/png;base64,${book.base64image}`
+                              : "/default-image.png"
+                          }
                           alt={book.title}
-                          className="book-image"
+                          className="book-image-admin"
                         />
                       </td>
                       <td>{book.title}</td>
-                      <td>{(book.publishers || []).map((p) => p.name).join(", ")}</td>
                       <td>
-                        {(book.authors || []).map((a) => `${a.firstName} ${a.lastName}`).join(", ")}
+                        {(book.publishers || []).map((p) => p.name).join(", ")}
                       </td>
-                      <td>{(book.genres || []).map((g) => g.name).join(", ")}</td>
+                      <td>
+                        {(book.authors || [])
+                          .map((a) => `${a.firstName} ${a.lastName}`)
+                          .join(", ")}
+                      </td>
+                      <td>
+                        {(book.genres || []).map((g) => g.name).join(", ")}
+                      </td>
                       <td>{book.explanation}</td>
                       <td>{book.status}</td>
                       <td>

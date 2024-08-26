@@ -53,7 +53,7 @@ const LoginPage = () => {
   return (
     <div className="login-page">
       <header className="header">
-        <Link to="/home" className="logo">
+        <Link to="/" className="logo">
           Elysian Kitap Evi
         </Link>
       </header>

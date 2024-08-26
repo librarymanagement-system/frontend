@@ -1,13 +1,10 @@
 .borrowed-books-page {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  max-width: 1200px;
   min-height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
 }
+
+
 
 .header {
   background-color: #ffffff;
@@ -30,23 +27,34 @@
 }
 
 .borrowed-books-content {
-  margin-top: 10px;
+  margin-top: 70px; 
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  padding: 20px;
+  flex: 1; 
+
 }
 
-section {
+.sec {
+  width: 100%;
+  max-width: 1200px; 
   margin-bottom: 40px;
 }
 
-.current-borrowed-books h2, .past-borrowed-books h2 {
+.current-borrowed-books h2,
+.past-borrowed-books h2 {
   font-size: 1.75rem;
   color: #0096be;
+  text-align: center;
 }
 
 .borrowed-books-list {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: center; 
 }
 
 .book-item {
@@ -58,12 +66,13 @@ section {
   width: 100%;
   max-width: 400px;
   padding: 20px;
+  align-items: center; 
+  justify-content: center; 
 }
 
 .book-image {
   width: 120px;
   height: auto;
-  object-fit: cover;
   border-radius: 15px 0 0 15px;
 }
 
@@ -92,14 +101,13 @@ section {
   margin: auto;
 }
 
-.modal h2{
+.modal h2 {
   margin-top: 10px;
-
 }
 
-.modal p{
-font-size: 0.9rem;
-margin-bottom: 10px;
+.modal p {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
 }
 
 .modal-overlay {
@@ -124,7 +132,6 @@ margin-bottom: 10px;
   border-radius: 5px;
   cursor: pointer;
   margin-top: 15px;
-
 }
 
 .modal-cancel-button {
@@ -158,15 +165,51 @@ margin-bottom: 10px;
 
 @media (max-width: 768px) {
   .borrowed-books-list {
-      flex-direction: column;
-      align-items: center;
+    flex-direction: column;
+    align-items: center;
   }
 
   .book-item {
-      max-width: 100%;
+    max-width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .book-image {
+    width: 100px;
+    margin-bottom: 10px;
+  }
+
+  .book-info {
+    padding-left: 0;
+    text-align: center;
   }
 
   .book-info h3 {
-      font-size: 1.2rem;
+    font-size: 1.2rem;
+  }
+
+  .book-info p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .borrowed-books-content {
+    padding: 10px;
+  }
+
+  .book-item {
+    padding: 10px;
+  }
+
+  .modal {
+    padding: 15px;
+    max-width: 90%;
+  }
+
+  .modal-confirm-button, .modal-cancel-button {
+    font-size: 0.9rem;
+    padding: 8px 16px;
   }
 }

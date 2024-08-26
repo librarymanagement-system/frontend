@@ -50,6 +50,7 @@
     margin-bottom: 25px;
     font-size: 2rem;
     text-align: center;
+    margin-top: 10px;
 }
 
 .input-group {
@@ -109,4 +110,44 @@
 .signup-link a:hover {
     color: #79973a;
     text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 10px 20px;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .login-box {
+        padding: 20px;
+    }
+
+    .login-box h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 10px 15px;
+    }
+
+    .logo {
+        font-size: 1rem;
+    }
+
+    .login-box {
+        padding: 15px;
+    }
+
+    .login-box h2 {
+        font-size: 1.25rem;
+    }
+
+    .btn {
+        font-size: 1rem;
+    }
 }

@@ -4,6 +4,7 @@
   padding: 20px 10px;
   text-align: center;
   position: relative;
+  clear: both; 
 }
 
 .footer-container {
@@ -40,4 +41,5 @@
 .footer-bottom {
   font-size: 0.8rem;
   margin-top: 20px;
+  padding: 10px 0; 
 }

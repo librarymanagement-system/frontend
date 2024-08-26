@@ -11,7 +11,7 @@ const Hamburger = ({ logoText }) => {
 
   return (
     <header className="header">
-      <Link to="/home" className="logo">
+      <Link to="/" className="logo">
         Elysian Kitap Evi
       </Link>
       <div className="hamburger-menu">
@@ -26,7 +26,7 @@ const Hamburger = ({ logoText }) => {
             <Link to="/borrowed-books" onClick={toggleMenu}>
               Ödünç Aldıklarım
             </Link>
-            <Link to="/logout" onClick={toggleMenu}>
+            <Link to="/" onClick={toggleMenu}>
               Çıkış Yap
             </Link>
           </div>

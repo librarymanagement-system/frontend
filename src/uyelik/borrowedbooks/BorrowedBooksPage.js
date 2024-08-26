@@ -3,6 +3,8 @@ import Hamburger from "../../component/hamburger/hamburger.js";
 import Modal from "react-modal";
 import api from "../../interceptor";
 import "./BorrowedBooksPage.css";
+import Footer from "../../component/footer/Footer.js";
+
 
 Modal.setAppElement("#root");
 
@@ -33,9 +35,6 @@ const BorrowedBooksPage = () => {
           const bookData = {
             id: loan.id,
             title: loan.book.title,
-            author: "",
-            genre: "",
-            publisher: "",
             image: `data:image/jpeg;base64,${loan.book.base64image}`,
             borrowedDate: loan.loanDate,
             status: loan.status,
@@ -116,15 +115,6 @@ const BorrowedBooksPage = () => {
                   <div className="book-info">
                     <h3>{book.title}</h3>
                     <p>
-                      <strong>Yazar:</strong> {book.author}
-                    </p>
-                    <p>
-                      <strong>Tür:</strong> {book.genre}
-                    </p>
-                    <p>
-                      <strong>Yayın Evi:</strong> {book.publisher}
-                    </p>
-                    <p>
                       <strong>Ödünç Alma Tarihi:</strong> {book.borrowedDate}
                     </p>
                     <p>
@@ -142,7 +132,7 @@ const BorrowedBooksPage = () => {
           </div>
         </section>
 
-        <section className="past-borrowed-books">
+        <section className="sec past-borrowed-books">
           <h2>Geçmişte Ödünç Aldığınız Kitaplar</h2>
           <div className="borrowed-books-list">
             {pastBorrowedBooks.length > 0 ? (
@@ -190,6 +180,8 @@ const BorrowedBooksPage = () => {
         <button onClick={confirmReturn} className="modal-confirm-button">Onaylıyorum</button>
         <button onClick={cancelReturn} className="modal-cancel-button">İptal</button>
       </Modal>
+      <Footer />
+
     </div>
   );
 };

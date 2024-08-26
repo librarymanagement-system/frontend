@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Hamburger from "../../component/hamburger/hamburger.js";
 import api from "../../interceptor";
 import "./profile.css";
+import Footer from "../../component/footer/Footer.js";
+
 
 const ProfilePage = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +19,6 @@ const ProfilePage = () => {
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    // Fetch current user details to pre-fill the form
     const fetchUserDetails = async () => {
       try {
         const response = await api.get(`/api/users/getUserDetails/${userId}`);
@@ -26,7 +27,7 @@ const ProfilePage = () => {
           name: user.name,
           username: user.username,
           email: user.email,
-          password: "", // Leave password empty initially
+          password: "", 
         });
       } catch (error) {
         console.error("Error fetching user details:", error);
@@ -116,6 +117,8 @@ const ProfilePage = () => {
           </button>
         </form>
       </div>
+      <Footer />
+
     </div>
   );
 };
