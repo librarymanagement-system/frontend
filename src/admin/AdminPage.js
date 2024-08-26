@@ -27,7 +27,7 @@ const AdminPage = () => {
         const response = await api.get("/api/books/getAllBooks", {
           params: {
             page: 0,
-            size: 15,
+            size: 28,
             sort: "id,asc",
           },
         });
@@ -109,11 +109,14 @@ const AdminPage = () => {
   };
 
   const handleLogout = () => {
-    navigate("/");
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+  
+    navigate("/login", { replace: true });
   };
-
+  
   const handleExport = async () => {
-    setExporting(true);
+    setExporting(true); /
     try {
       const response = await api.get("/api/books/export", {
         responseType: "blob",

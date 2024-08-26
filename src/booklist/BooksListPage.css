@@ -150,6 +150,53 @@ h2 {
   font-size: 0.8rem;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pagination .page-item {
+  margin: 0 5px;
+}
+
+.pagination .page-link {
+  display: block;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #007bb5;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination .page-link:hover {
+  background-color: #f1f1f1;
+  color: #005f8b;
+}
+
+.pagination .active .page-link {
+  background-color: #007bb5;
+  color: white;
+  border-color: #007bb5;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #ccc;
+  cursor: not-allowed;
+  background-color: #f9f9f9;
+  border-color: #ddd;
+}
+
+.pagination .page-item .page-link {
+  cursor: pointer;
+}
+
+
+
 @media (min-width: 768px) {
   .filters {
     flex-direction: row; 
