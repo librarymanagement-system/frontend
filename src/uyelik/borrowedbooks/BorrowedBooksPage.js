@@ -25,23 +25,24 @@ const BorrowedBooksPage = () => {
     const fetchUserLoans = async () => {
       try {
         const response = await api.get(`/api/users/getUserLoans/${userId}`);
-        const loans = response.data;
+        console.log("Loans fetched:", response.data); //
 
+        const loans = response.data;
         const current = [];
         const past = [];
 
         loans.forEach((loan) => {
           const bookData = {
-            id: loan.id,
+            loanId: loan.id,
+            bookId: loan.book.id,
             title: loan.book.title,
             image: `data:image/jpeg;base64,${loan.book.base64image}`,
             borrowedDate: loan.loanDate,
             status: loan.status,
-            author: loan.book.author, 
+            author: loan.book.author,
             genre: loan.book.genre,
             publisher: loan.book.publisher,
           };
-          
 
           if (loan.status === "ACTIVE" || loan.status === "LATE") {
             current.push(bookData);
@@ -58,50 +59,51 @@ const BorrowedBooksPage = () => {
       }
     };
 
+
     fetchUserLoans();
   }, [userId]);
 
   const handleReturnBook = (book) => {
+    console.log("Book selected for return:", book);
+    console.log("Selected Book ID:", book.bookId);
     setSelectedBook(book);
     setModalIsOpen(true);
   };
+
 
   const confirmReturn = async () => {
     if (!selectedBook) return;
 
     try {
-        if (!userId || !selectedBook.id) {
+        const userId = localStorage.getItem("userId");
+        if (!userId || !selectedBook.bookId) {
             setErrorMessage("Invalid user or book ID.");
             return;
         }
 
-        console.log(`Returning book with ID ${selectedBook.id} for user ${userId}`);
-        const response = await api.post(`/api/loans/return/${userId}/${selectedBook.id}`);
-        console.log("API Response:", response.data);
-        
-        if (response.data === "Book returned successfully.") {
-            setCurrentBorrowedBooks((prevBooks) => {
-                const updatedBooks = prevBooks.filter((book) => book.id !== selectedBook.id);
-                console.log("Updated Current Borrowed Books:", updatedBooks);
-                return updatedBooks;
-            });
+        const response = await api.post(`/api/loans/return`, null, {
+          params: { userId, bookId: selectedBook.bookId }
+        });
 
-            setPastBorrowedBooks((prevBooks) => {
-                const updatedPastBooks = [...prevBooks, { ...selectedBook, status: "COMPLETED" }];
-                console.log("Updated Past Borrowed Books:", updatedPastBooks);
-                return updatedPastBooks;
-            });
+        console.log("API Response:", response.data);
+
+        if (response.data === "Kitap başarıyla iade edildi.") {
+            setCurrentBorrowedBooks(prevBooks => prevBooks.filter(book => book.bookId !== selectedBook.bookId));
+            setPastBorrowedBooks(prevBooks => [...prevBooks, { ...selectedBook, status: "COMPLETED" }]);
 
             setModalIsOpen(false);
             setSelectedBook(null);
         } else {
-            setErrorMessage("Kitap iade edilirken bir hata oluştu.");
+            setErrorMessage("İade başarısız.");
         }
     } catch (error) {
-        console.error("Error returning book:", error);
-        setErrorMessage("Kitap iade edilirken bir hata oluştu.");
+        console.error("İade başarısız.", error);
+        setErrorMessage("İade sırasında bir hata oluştu.");
     }
-};
+  };
+
+
+
 
 
   const cancelReturn = () => {

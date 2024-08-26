@@ -113,7 +113,7 @@ const AdminPage = () => {
   };
 
   const handleExport = async () => {
-    setExporting(true); // Başlangıçta yükleniyor durumunu ayarla
+    setExporting(true);
     try {
       const response = await api.get("/api/books/export", {
         responseType: "blob",
