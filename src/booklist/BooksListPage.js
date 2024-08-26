@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../interceptor";
+import { fetchBooks } from "../services/bookService";
 import "./BooksListPage.css";
 import Header from "../component/header/Header.js";
 import Footer from "../component/footer/Footer.js";
@@ -18,26 +18,19 @@ const BooksListPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
-  const fetchBooks = async (page = 0) => {
+  const loadBooks = async (page = 0) => {
     try {
-      const response = await api.get("/api/books/searchSingle", {
-        params: {
-          searchTerm,
-          page,
-          size: 12, // Sayfa başına kitap sayısını 12 olarak ayarla
-          sort: "id,asc"
-        },
-      });
-      setBooks(response.data.content || []);
-      setPageCount(Math.ceil(response.data.totalElements / 12)); // Toplam sayfa sayısını hesapla
+      const { content, totalElements } = await fetchBooks(searchTerm, page);
+      setBooks(content);
+      setPageCount(Math.ceil(totalElements / 12));
     } catch (error) {
-      console.error("Kitaplar yüklenirken hata oluştu:", error);
-      toast.error("Kitaplar yüklenirken bir hata oluştu.");
+      console.error(error.message);
+      toast.error(error.message);
     }
   };
 
   useEffect(() => {
-    fetchBooks(currentPage);
+    loadBooks(currentPage);
   }, [searchTerm, currentPage]);
 
   const handleSearchChange = (e) => {
@@ -74,7 +67,7 @@ const BooksListPage = () => {
             placeholder="Başlık, yazar, yayıncı veya tür girin"
           />
         </div>
-        <button className="se-area" onClick={() => fetchBooks(0)}>Ara</button>
+        <button className="se-area" onClick={() => loadBooks(0)}>Ara</button>
       </div>
       <div className="books-grid">
         {books.map((book) => (

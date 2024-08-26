@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import api from "../interceptor";
+import { fetchBookDetails, borrowBook } from "../services/bookService";
 import "./BookDetailPage.css";
 import Footer from "../component/footer/Footer.js";
 import { ToastContainer, toast } from 'react-toastify';
@@ -12,22 +12,18 @@ const BookDetailPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const fetchBookDetails = async () => {
+  const loadBookDetails = async () => {
     try {
-      const response = await api.get(`/api/books/getBookById/${id}`);
-      if (response.data) {
-        setBook(response.data);
-      } else {
-        setBook(null);
-      }
+      const data = await fetchBookDetails(id);
+      setBook(data);
     } catch (error) {
-      console.error("Kitap detayları fetch hatası:", error);
+      console.error(error.message);
       setBook(null);
     }
   };
 
   useEffect(() => {
-    fetchBookDetails();
+    loadBookDetails();
   }, [id]);
 
   const handleBorrowClick = () => {
@@ -45,21 +41,12 @@ const BookDetailPage = () => {
         return;
       }
 
-      const response = await api.post(`/api/loans/borrow`, null, {
-        params: { userId, bookId: id },
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (response.status === 200) {
-        toast.success("Kitap başarıyla ödünç alındı!");
-        navigate("/borrowed-books");
-      } else {
-        console.error("Kitap ödünç alma hatası:", response.data.message);
-        toast.error(response.data.message || "Kitap ödünç alma işlemi başarısız.");
-      }
+      await borrowBook(userId, token, id);
+      toast.success("Kitap başarıyla ödünç alındı!");
+      navigate("/borrowed-books");
     } catch (error) {
-      console.error("Kitap ödünç alma hatası:", error.response ? error.response.data : error.message);
-      toast.error("Maksimum ödünç kitap sınırına ulaşıldı.");
+      console.error(error.message);
+      toast.error(error.message || "Kitap ödünç alma işlemi başarısız.");
     }
   };
 

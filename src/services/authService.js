@@ -27,7 +27,3 @@ export const getUserDetails = async (userId) => {
   }
 };
 
-
-
-
-
