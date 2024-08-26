@@ -116,7 +116,7 @@ const AdminPage = () => {
   };
   
   const handleExport = async () => {
-    setExporting(true); /
+    setExporting(true);
     try {
       const response = await api.get("/api/books/export", {
         responseType: "blob",
