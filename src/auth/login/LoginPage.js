@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { login, getUserDetails } from '../../services/authService'; 
 import "../login/LoginPage.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -26,13 +28,16 @@ const LoginPage = () => {
       const userRole = userDetailsResponse.role;
 
       if (userRole === "ADMIN") {
+        toast.success("Başarıyla giriş yaptınız. Yönetici paneline yönlendiriliyorsunuz.");
         navigate("/admin", { replace: true });
       } else {
+        toast.success("Başarıyla giriş yaptınız. Kitaplar sayfasına yönlendiriliyorsunuz.");
         navigate(from, { replace: true });
       }
     } catch (error) {
       console.error("Giriş hatası:", error);
       setErrorMessage("Giriş işlemi başarısız oldu. Lütfen kullanıcı adı ve şifrenizi kontrol edin.");
+      toast.error("Giriş işlemi başarısız oldu. Lütfen kullanıcı adı ve şifrenizi kontrol edin.");
     }
   };
 
@@ -73,6 +78,7 @@ const LoginPage = () => {
           </form>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={5000} />
     </div>
   );
 };

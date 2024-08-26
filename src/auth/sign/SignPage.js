@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signUp } from '../../services/authService'; 
 import './SignPage.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignUpPage = () => {
   const [name, setName] = useState("");
@@ -15,10 +17,12 @@ const SignUpPage = () => {
     e.preventDefault();
     try {
       await signUp(name, email, username, password);
+      toast.success("Başarıyla kayıt oldunuz! Giriş yapabilirsiniz.");
       navigate('/login');
     } catch (error) {
       console.error('Kayıt hatası:', error);
       setErrorMessage('Kayıt yapılamadı. Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.');
+      toast.error("Kayıt yapılamadı. Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.");
     }
   };
 
@@ -79,6 +83,7 @@ const SignUpPage = () => {
           </form>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={5000} />
     </div>
   );
 };

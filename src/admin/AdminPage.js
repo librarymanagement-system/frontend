@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./AdminPage.css";
 import api from "../interceptor";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AdminPage = () => {
   const [bookName, setBookName] = useState("");
@@ -14,6 +16,7 @@ const AdminPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [dateTime, setDateTime] = useState(new Date().toLocaleString());
+  const [exporting, setExporting] = useState(false); // Yeni state
 
   const navigate = useNavigate();
 
@@ -75,13 +78,13 @@ const AdminPage = () => {
         const addedBook = response.data;
         setBooks((prevBooks) => [...prevBooks, addedBook]);
         clearInputs();
-        alert("Kitap başarıyla eklendi!");
+        toast.success("Kitap başarıyla eklendi!");
       } else {
         throw new Error(response.data.message || "Bilinmeyen hata");
       }
     } catch (error) {
       console.error("Kitap ekleme hatası:", error);
-      setError(error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
@@ -89,9 +92,10 @@ const AdminPage = () => {
     try {
       await api.delete(`/api/books/${bookId}`);
       setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+      toast.success("Kitap başarıyla silindi!");
     } catch (error) {
       console.error("Kitap kaldırma hatası:", error);
-      alert("Kitap kaldırma başarısız.");
+      toast.error("Kitap kaldırma başarısız.");
     }
   };
 
@@ -109,6 +113,7 @@ const AdminPage = () => {
   };
 
   const handleExport = async () => {
+    setExporting(true); // Başlangıçta yükleniyor durumunu ayarla
     try {
       const response = await api.get("/api/books/export", {
         responseType: "blob",
@@ -123,11 +128,13 @@ const AdminPage = () => {
         link.click();
         document.body.removeChild(link);
       } else {
-        alert("Excel dosyası indirilemedi.");
+        toast.error("Excel dosyası indirilemedi.");
       }
     } catch (error) {
       console.error("Export error:", error);
-      alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+      toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setExporting(false); // İşlem tamamlandığında yükleniyor durumunu kaldır
     }
   };
 
@@ -188,8 +195,8 @@ const AdminPage = () => {
         </div>
         <div className="book-list">
           <h2>Mevcut Kitaplar</h2>
-          <button onClick={handleExport} className="export-btn">
-            Kitapları Excel Olarak İndir
+          <button onClick={handleExport} className="export-btn" disabled={exporting}>
+            {exporting ? "Yükleniyor..." : "Kitapları Excel Olarak İndir"}
           </button>
           {loading ? (
             <p>Loading...</p>
@@ -256,6 +263,7 @@ const AdminPage = () => {
           )}
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={5000} />
     </div>
   );
 };

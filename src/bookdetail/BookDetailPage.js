@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../interceptor";
 import "./BookDetailPage.css";
 import Footer from "../component/footer/Footer.js";
+import { ToastContainer, toast } from 'react-toastify';
 
 const BookDetailPage = () => {
   const { id } = useParams();
@@ -11,20 +12,16 @@ const BookDetailPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const userId = localStorage.getItem("userId");
-
   const fetchBookDetails = async () => {
     try {
-      console.log("API URL:", `/api/books/getBookById/${id}`);
       const response = await api.get(`/api/books/getBookById/${id}`);
-      console.log("API Yanıtı:", response.data);
       if (response.data) {
         setBook(response.data);
       } else {
         setBook(null);
       }
     } catch (error) {
-      console.error("Fetch book details error:", error);
+      console.error("Kitap detayları fetch hatası:", error);
       setBook(null);
     }
   };
@@ -41,43 +38,30 @@ const BookDetailPage = () => {
     try {
       const userId = localStorage.getItem("userId");
       const token = localStorage.getItem("token");
-  
-      if (!userId) {
-        console.error("Kullanıcı ID'si bulunamadı");
-        alert("Lütfen giriş yapın.");
+
+      if (!userId || !token) {
+        console.error("Kullanıcı ID'si veya token bulunamadı.");
         navigate("/login");
         return;
       }
-  
-      if (!token) {
-        console.error("Token bulunamadı");
-        alert("Token bulunamadı. Lütfen tekrar giriş yapın.");
-        navigate("/login");
-        return;
-      }
-  
+
       const response = await api.post(`/api/loans/borrow`, null, {
-        params: {
-          userId: userId,
-          bookId: id,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        params: { userId, bookId: id },
+        headers: { Authorization: `Bearer ${token}` },
       });
-  
+
       if (response.status === 200) {
+        toast.success("Kitap başarıyla ödünç alındı!");
         navigate("/borrowed-books");
       } else {
         console.error("Kitap ödünç alma hatası:", response.data.message);
-        alert(response.data.message || "Kitap ödünç alma işlemi başarısız.");
+        toast.error(response.data.message || "Kitap ödünç alma işlemi başarısız.");
       }
     } catch (error) {
       console.error("Kitap ödünç alma hatası:", error.response ? error.response.data : error.message);
-      alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+      toast.error("Maksimum ödünç kitap sınırına ulaşıldı.");
     }
   };
-  
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -103,18 +87,10 @@ const BookDetailPage = () => {
           </button>
           {isMenuOpen && (
             <div className="menu-dropdown">
-              <Link to="/profile" onClick={toggleMenu}>
-                Profilim
-              </Link>
-              <Link to="/borrowed-books" onClick={toggleMenu}>
-                Ödünç Aldıklarım
-              </Link>
-              <Link to="/returns" onClick={toggleMenu}>
-                İadeler
-              </Link>
-              <Link to="/logout" onClick={toggleMenu}>
-                Çıkış Yap
-              </Link>
+              <Link to="/profile" onClick={toggleMenu}>Profilim</Link>
+              <Link to="/borrowed-books" onClick={toggleMenu}>Ödünç Aldıklarım</Link>
+              <Link to="/returns" onClick={toggleMenu}>İadeler</Link>
+              <Link to="/" onClick={toggleMenu}>Çıkış Yap</Link>
             </div>
           )}
         </div>
@@ -123,40 +99,18 @@ const BookDetailPage = () => {
       <div className="book-detail-wrapper">
         <div className="book-detail-content">
           <img
-            src={
-              book.base64image
-                ? `data:image/png;base64,${book.base64image}`
-                : "/default-image.png"
-            }
+            src={book.base64image ? `data:image/png;base64,${book.base64image}` : "/default-image.png"}
             alt={book.title}
             className="book-image-detail"
           />
-
           <div className="book-info-detail">
             <h1>{book.title}</h1>
-            <p>
-              <strong>Yazar:</strong>{" "}
-              {book.authors
-                .map((author) => `${author.firstName} ${author.lastName}`)
-                .join(", ")}
-            </p>
-            <p>
-              <strong>Tür:</strong>{" "}
-              {book.genres.map((genre) => genre.name).join(", ")}
-            </p>
-            <p>
-              <strong>Yayın Evi:</strong>{" "}
-              {book.publishers.map((publisher) => publisher.name).join(", ")}
-            </p>
-            <p>
-              <strong>Durum:</strong> {book.status}
-            </p>
-            <p>
-              <strong>Açıklama:</strong> {book.explanation}
-            </p>
-            <button className="borrow-button" onClick={handleBorrowClick}>
-              Ödünç Al
-            </button>
+            <p><strong>Yazar:</strong> {book.authors.map(author => `${author.firstName} ${author.lastName}`).join(", ")}</p>
+            <p><strong>Tür:</strong> {book.genres.map(genre => genre.name).join(", ")}</p>
+            <p><strong>Yayın Evi:</strong> {book.publishers.map(publisher => publisher.name).join(", ")}</p>
+            <p><strong>Durum:</strong> {book.status}</p>
+            <p><strong>Açıklama:</strong> {book.explanation}</p>
+            <button className="borrow-button" onClick={handleBorrowClick}>Ödünç Al</button>
           </div>
         </div>
       </div>
@@ -166,32 +120,18 @@ const BookDetailPage = () => {
           <div className="modal-content">
             <h2>Önemli Bilgilendirme</h2>
             <ul>
-              <li>
-                Kullanıcılar, kütüphaneden ödünç aldıkları kitapların iadesini 1
-                aylık süre içinde gerçekleştirmelidir. İadesi yapılmayan
-                kitaplar kaybolmuş olarak kabul edilir.
-              </li>
-              <li>
-                Kitap kaybına sebep olan kullanıcıların ödünç alma süresi ilk
-                sefer için yarıya indirilecek, ikinci kitap kaybından sonra
-                kitap ödünç alma hakları iptal edilecektir.
-              </li>
-              <li>
-                Bir kullanıcının üzerinde bulunan ödünç kitap sayısı 3 ile
-                sınırlandırılmıştır.
-              </li>
+              <li>Kullanıcılar, kütüphaneden ödünç aldıkları kitapların iadesini 1 aylık süre içinde gerçekleştirmelidir. İadesi yapılmayan kitaplar kaybolmuş olarak kabul edilir.</li>
+              <li>Kitap kaybına sebep olan kullanıcıların ödünç alma süresi ilk sefer için yarıya indirilecek, ikinci kitap kaybından sonra kitap ödünç alma hakları iptal edilecektir.</li>
+              <li>Bir kullanıcının üzerinde bulunan ödünç kitap sayısı 3 ile sınırlandırılmıştır.</li>
             </ul>
-            <button className="confirm-button" onClick={handleConfirm}>
-              Onaylıyorum
-            </button>
-            <button className="close-button" onClick={handleCloseModal}>
-              Kapat
-            </button>
+            <button className="confirm-button" onClick={handleConfirm}>Onaylıyorum</button>
+            <button className="close-button" onClick={handleCloseModal}>Kapat</button>
           </div>
         </div>
       )}
 
       <Footer />
+      <ToastContainer />
     </div>
   );
 };

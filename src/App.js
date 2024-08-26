@@ -9,6 +9,8 @@ import BookDetailPage from "./bookdetail/BookDetailPage";
 import { AuthProvider } from "./AuthContext";
 import BorrowedBooksPage from "./uyelik/borrowedbooks/BorrowedBooksPage";
 import ProfilePage from "./uyelik/profile/profile";  
+import 'react-toastify/dist/ReactToastify.css';
+
 
 import "./App.css";
 
