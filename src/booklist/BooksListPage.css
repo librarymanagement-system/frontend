@@ -12,7 +12,7 @@ h2 {
 
 .filters {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -21,7 +21,7 @@ h2 {
   width: 100%;
   max-width: 500px;
   display: flex;
-  align-items: center; 
+  align-items: center;
 }
 
 .filters label {
@@ -39,7 +39,7 @@ h2 {
   font-size: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: border-color 0.3s, box-shadow 0.3s;
-  margin-right: 10px; 
+  margin-right: 10px;
 }
 
 .filters input:focus {
@@ -94,8 +94,8 @@ h2 {
 }
 
 .book-card img {
-  width: 80%; 
-  height: 200px; 
+  width: 80%;
+  height: 200px;
   border-bottom: 2px solid #ddd;
   margin: 0 auto;
   display: block;
@@ -195,23 +195,21 @@ h2 {
   cursor: pointer;
 }
 
-
-
 @media (min-width: 768px) {
   .filters {
-    flex-direction: row; 
+    flex-direction: row;
     justify-content: center;
   }
 
   .filters .filter-group {
     margin-bottom: 0;
-    margin-right: 10px; 
+    margin-right: 10px;
     width: auto;
     flex: 1;
   }
 
   .se-area {
-    width: auto; 
+    width: auto;
     margin-top: 10px;
   }
 }

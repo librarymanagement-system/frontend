@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./AdminPage.css";
-import api from "../interceptor";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+  fetchBooks,
+  addBook,
+  removeBook,
+  exportBooks
+} from "../services/adminService";
 
 const AdminPage = () => {
   const [bookName, setBookName] = useState("");
@@ -16,22 +21,16 @@ const AdminPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [dateTime, setDateTime] = useState(new Date().toLocaleString());
-  const [exporting, setExporting] = useState(false); // Yeni state
+  const [exporting, setExporting] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchBooks = async () => {
+    const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await api.get("/api/books/getAllBooks", {
-          params: {
-            page: 0,
-            size: 28,
-            sort: "id,asc",
-          },
-        });
-        setBooks(response.data.content || []);
+        const data = await fetchBooks();
+        setBooks(data.content || []);
       } catch (error) {
         console.error("Fetch books error:", error);
         setError("Kitaplar yüklenirken bir hata oluştu.");
@@ -40,7 +39,7 @@ const AdminPage = () => {
       }
     };
 
-    fetchBooks();
+    fetchData();
 
     const intervalId = setInterval(() => {
       setDateTime(new Date().toLocaleString());
@@ -73,24 +72,19 @@ const AdminPage = () => {
     formData.append("file", bookImage);
 
     try {
-      const response = await api.post("/api/books/addBook", formData);
-      if (response.status === 200) {
-        const addedBook = response.data;
-        setBooks((prevBooks) => [...prevBooks, addedBook]);
-        clearInputs();
-        toast.success("Kitap başarıyla eklendi!");
-      } else {
-        throw new Error(response.data.message || "Bilinmeyen hata");
-      }
+      const addedBook = await addBook(formData);
+      setBooks((prevBooks) => [...prevBooks, addedBook]);
+      clearInputs();
+      toast.success("Kitap başarıyla eklendi!");
     } catch (error) {
       console.error("Kitap ekleme hatası:", error);
-      toast.error(error.response?.data?.message || error.message);
+      toast.error(error.message);
     }
   };
 
   const handleRemoveBook = async (bookId) => {
     try {
-      await api.delete(`/api/books/${bookId}`);
+      await removeBook(bookId);
       setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
       toast.success("Kitap başarıyla silindi!");
     } catch (error) {
@@ -111,16 +105,13 @@ const AdminPage = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
-  
     navigate("/login", { replace: true });
   };
-  
+
   const handleExport = async () => {
     setExporting(true);
     try {
-      const response = await api.get("/api/books/export", {
-        responseType: "blob",
-      });
+      const response = await exportBooks();
 
       if (response.status === 200) {
         const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -137,7 +128,7 @@ const AdminPage = () => {
       console.error("Export error:", error);
       toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
-      setExporting(false); // İşlem tamamlandığında yükleniyor durumunu kaldır
+      setExporting(false);
     }
   };
 
