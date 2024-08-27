@@ -24,7 +24,6 @@ const BooksListPage = () => {
       setBooks(content);
       setPageCount(Math.ceil(totalElements / 12));
     } catch (error) {
-      console.error(error.message);
       toast.error(error.message);
     }
   };

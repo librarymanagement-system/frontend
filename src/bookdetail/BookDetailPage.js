@@ -17,7 +17,6 @@ const BookDetailPage = () => {
       const data = await fetchBookDetails(id);
       setBook(data);
     } catch (error) {
-      console.error(error.message);
       setBook(null);
     }
   };
@@ -36,7 +35,6 @@ const BookDetailPage = () => {
       const token = localStorage.getItem("token");
 
       if (!userId || !token) {
-        console.error("Kullanıcı ID'si veya token bulunamadı.");
         navigate("/login");
         return;
       }
@@ -45,7 +43,6 @@ const BookDetailPage = () => {
       toast.success("Kitap başarıyla ödünç alındı!");
       navigate("/borrowed-books");
     } catch (error) {
-      console.error(error.message);
       toast.error(error.message || "Kitap ödünç alma işlemi başarısız.");
     }
   };

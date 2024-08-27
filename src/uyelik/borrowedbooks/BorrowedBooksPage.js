@@ -14,6 +14,9 @@ const BorrowedBooksPage = () => {
   const [pastBorrowedBooks, setPastBorrowedBooks] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const successMessage = "Kitap başarıyla iade edildi.";
+  const failureMessage = "İade başarısız."
+
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -25,8 +28,6 @@ const BorrowedBooksPage = () => {
     const fetchUserLoans = async () => {
       try {
         const response = await api.get(`/api/users/getUserLoans/${userId}`);
-        console.log("Loans fetched:", response.data); //
-
         const loans = response.data;
         const current = [];
         const past = [];
@@ -54,57 +55,51 @@ const BorrowedBooksPage = () => {
         setCurrentBorrowedBooks(current);
         setPastBorrowedBooks(past);
       } catch (error) {
-        console.error("Error fetching user loans:", error);
         setErrorMessage("Ödünç alınan kitaplar yüklenirken bir hata oluştu.");
       }
     };
-
 
     fetchUserLoans();
   }, [userId]);
 
   const handleReturnBook = (book) => {
-    console.log("Book selected for return:", book);
-    console.log("Selected Book ID:", book.bookId);
     setSelectedBook(book);
     setModalIsOpen(true);
   };
-
 
   const confirmReturn = async () => {
     if (!selectedBook) return;
 
     try {
-        const userId = localStorage.getItem("userId");
-        if (!userId || !selectedBook.bookId) {
-            setErrorMessage("Invalid user or book ID.");
-            return;
-        }
+      const userId = localStorage.getItem("userId");
+      if (!userId || !selectedBook.bookId) {
+        setErrorMessage("Invalid user or book ID.");
+        return;
+      }
 
-        const response = await api.post(`/api/loans/return`, null, {
-          params: { userId, bookId: selectedBook.bookId }
-        });
+      const response = await api.post(`/api/loans/return`, null, {
+        params: { userId, bookId: selectedBook.bookId },
+      });
 
-        console.log("API Response:", response.data);
 
-        if (response.data === "Kitap başarıyla iade edildi.") {
-            setCurrentBorrowedBooks(prevBooks => prevBooks.filter(book => book.bookId !== selectedBook.bookId));
-            setPastBorrowedBooks(prevBooks => [...prevBooks, { ...selectedBook, status: "COMPLETED" }]);
+      if (response.data === successMessage) {
+        setCurrentBorrowedBooks((prevBooks) =>
+          prevBooks.filter((book) => book.bookId !== selectedBook.bookId)
+        );
+        setPastBorrowedBooks((prevBooks) => [
+          ...prevBooks,
+          { ...selectedBook, status: "COMPLETED" },
+        ]);
 
-            setModalIsOpen(false);
-            setSelectedBook(null);
-        } else {
-            setErrorMessage("İade başarısız.");
-        }
+        setModalIsOpen(false);
+        setSelectedBook(null);
+      } else {
+        setErrorMessage(failureMessage);
+      }
     } catch (error) {
-        console.error("İade başarısız.", error);
-        setErrorMessage("İade sırasında bir hata oluştu.");
+      setErrorMessage("İade sırasında bir hata oluştu.");
     }
   };
-
-
-
-
 
   const cancelReturn = () => {
     setModalIsOpen(false);

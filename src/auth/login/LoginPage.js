@@ -36,7 +36,6 @@ const LoginPage = () => {
         navigate(from, { replace: true });
       }
     } catch (error) {
-      console.error("Giriş hatası:", error);
       setErrorMessage("Giriş işlemi başarısız oldu. Lütfen kullanıcı adı ve şifrenizi kontrol edin.");
       toast.error("Giriş işlemi başarısız oldu. Lütfen kullanıcı adı ve şifrenizi kontrol edin.");
     }

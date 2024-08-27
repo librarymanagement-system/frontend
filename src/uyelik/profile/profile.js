@@ -30,7 +30,6 @@ const ProfilePage = () => {
           password: "", 
         });
       } catch (error) {
-        console.error("Error fetching user details:", error);
         setErrorMessage("Kullanıcı bilgileri alınamadı.");
       }
     };
@@ -54,7 +53,6 @@ const ProfilePage = () => {
       setSuccessMessage("Profil başarıyla güncellendi!");
       setErrorMessage("");
     } catch (error) {
-      console.error("Update error:", error);
       setErrorMessage("Profil güncellenirken bir hata oluştu.");
       setSuccessMessage("");
     }

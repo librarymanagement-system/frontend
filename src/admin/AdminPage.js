@@ -32,7 +32,6 @@ const AdminPage = () => {
         const data = await fetchBooks();
         setBooks(data.content || []);
       } catch (error) {
-        console.error("Fetch books error:", error);
         setError("Kitaplar yüklenirken bir hata oluştu.");
       } finally {
         setLoading(false);
@@ -77,7 +76,6 @@ const AdminPage = () => {
       clearInputs();
       toast.success("Kitap başarıyla eklendi!");
     } catch (error) {
-      console.error("Kitap ekleme hatası:", error);
       toast.error(error.message);
     }
   };
@@ -88,7 +86,6 @@ const AdminPage = () => {
       setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
       toast.success("Kitap başarıyla silindi!");
     } catch (error) {
-      console.error("Kitap kaldırma hatası:", error);
       toast.error("Kitap kaldırma başarısız.");
     }
   };
@@ -125,7 +122,6 @@ const AdminPage = () => {
         toast.error("Excel dosyası indirilemedi.");
       }
     } catch (error) {
-      console.error("Export error:", error);
       toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setExporting(false);
