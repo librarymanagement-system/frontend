@@ -48,7 +48,8 @@ const AdminPage = () => {
   }, []);
 
   const handleAddBook = async () => {
-    if (!bookName || !publisher || !author || !genre || !bookImage) {
+    const isHandleBook = !bookName || !publisher || !author || !genre || !bookImage;
+    if (isHandleBook) {
       setError("Lütfen tüm alanları doldurun.");
       return;
     }

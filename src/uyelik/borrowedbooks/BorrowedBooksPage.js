@@ -7,6 +7,13 @@ import Footer from "../../component/footer/Footer.js";
 
 Modal.setAppElement("#root");
 
+const LOAN_STATUSES = {
+  ACTIVE: 'ACTIVE',
+  LATE: 'LATE',
+  COMPLETED: 'COMPLETED',
+  LOST: 'LOST'
+};
+
 const BorrowedBooksPage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -15,7 +22,7 @@ const BorrowedBooksPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const successMessage = "Kitap başarıyla iade edildi.";
-  const failureMessage = "İade başarısız."
+  const failureMessage = "İade başarısız.";
 
   const userId = localStorage.getItem("userId");
 
@@ -45,9 +52,9 @@ const BorrowedBooksPage = () => {
             publisher: loan.book.publisher,
           };
 
-          if (loan.status === "ACTIVE" || loan.status === "LATE") {
+          if (loan.status === LOAN_STATUSES.ACTIVE || loan.status === LOAN_STATUSES.LATE) {
             current.push(bookData);
-          } else if (loan.status === "COMPLETED" || loan.status === "LOST") {
+          } else if (loan.status === LOAN_STATUSES.COMPLETED || loan.status === LOAN_STATUSES.LOST) {
             past.push(bookData);
           }
         });
@@ -81,14 +88,13 @@ const BorrowedBooksPage = () => {
         params: { userId, bookId: selectedBook.bookId },
       });
 
-
       if (response.data === successMessage) {
         setCurrentBorrowedBooks((prevBooks) =>
           prevBooks.filter((book) => book.bookId !== selectedBook.bookId)
         );
         setPastBorrowedBooks((prevBooks) => [
           ...prevBooks,
-          { ...selectedBook, status: "COMPLETED" },
+          { ...selectedBook, status: LOAN_STATUSES.COMPLETED },
         ]);
 
         setModalIsOpen(false);
@@ -135,7 +141,7 @@ const BorrowedBooksPage = () => {
                       onClick={() => handleReturnBook(book)}
                       className="return-button"
                     >
-                      {book.status === "LATE"
+                      {book.status === LOAN_STATUSES.LATE
                         ? "Gecikmiş Kitabı İade Et"
                         : "İade Et"}
                     </button>
@@ -195,9 +201,7 @@ const BorrowedBooksPage = () => {
       >
         <h2>Kitap İade İşlemi</h2>
         <p>
-          {selectedBook
-            ? `"${selectedBook.title}" kitabını iade etmek istediğinize emin misiniz?`
-            : ""}
+          {selectedBook && `"${selectedBook.title}" kitabını iade etmek istediğinize emin misiniz?`}
         </p>
         <button onClick={confirmReturn} className="modal-confirm-button">
           Onaylıyorum

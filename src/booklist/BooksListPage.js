@@ -40,10 +40,7 @@ const BooksListPage = () => {
     if (isAuthenticated) {
       navigate(`/books/${id}`);
     } else {
-      toast.warning("Lütfen giriş yapın. Yönlendiriliyorsunuz...");
-      setTimeout(() => {
         navigate("/login", { state: { from: `/books/${id}` } });
-      }, 1000);
     }
   };
 
