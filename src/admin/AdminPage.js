@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./AdminPage.css";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   fetchBooks,
   addBook,
   removeBook,
-  exportBooks
+  exportBooks,
 } from "../services/adminService";
 
 const AdminPage = () => {
@@ -57,18 +57,18 @@ const AdminPage = () => {
     const formData = new FormData();
     formData.append("title", bookName);
     formData.append("explanation", explanation);
-    author
-      .split(",")
-      .map((a) => a.trim())
-      .forEach((a) => formData.append("authors", a));
-    publisher
-      .split(",")
-      .map((p) => p.trim())
-      .forEach((p) => formData.append("publishers", p));
-    genre
-      .split(",")
-      .map((g) => g.trim())
-      .forEach((g) => formData.append("genres", g));
+
+    const appendMultipleValues = (key, values) => {
+      values
+        .split(",")
+        .map((value) => value.trim())
+        .forEach((value) => formData.append(key, value));
+    };
+
+    appendMultipleValues("authors", author);
+    appendMultipleValues("publishers", publisher);
+    appendMultipleValues("genres", genre);
+
     formData.append("file", bookImage);
 
     try {
@@ -189,7 +189,11 @@ const AdminPage = () => {
         </div>
         <div className="book-list">
           <h2>Mevcut Kitaplar</h2>
-          <button onClick={handleExport} className="export-btn" disabled={exporting}>
+          <button
+            onClick={handleExport}
+            className="export-btn"
+            disabled={exporting}
+          >
             {exporting ? "Yükleniyor..." : "Kitapları Excel Olarak İndir"}
           </button>
           {loading ? (
