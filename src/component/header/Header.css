@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   line-height: 1.6;
   color: #333;
 }
@@ -24,7 +24,7 @@ body {
 
 .header-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
@@ -32,14 +32,25 @@ body {
 }
 
 .logo {
-  font-size: 1.2rem;
-  font-weight: bold;
+  margin-right: 0; /* Sağdaki boşluğu sıfırlayın */
+  padding: 0; /* Fazladan padding varsa kaldırın */
+}
+
+.logo img {
+  height: 100px; /* Logo yüksekliğini ayarlayın */
+  width: auto; /* Genişliği otomatik ayarlayın */
+}
+
+nav.main-menu {
+  flex-grow: 1; /* Nav elemanının genişlemesini sağlayın */
+  text-align: center; /* Nav elemanını ortalayın */
 }
 
 .main-menu ul {
   display: flex;
   list-style: none;
   margin-left: auto;
+  margin-left: 30px;
 }
 
 .main-menu .menu-item {
@@ -82,10 +93,12 @@ body {
   color: white;
   font-size: 0.8rem;
 }
-
+.auth-buttons {
+  margin-left: 0; /* Soldaki boşluğu sıfırlayın */
+}
 .auth-buttons .btn {
-  font-size: 1rem; 
-  padding: 10px 20px; 
+  font-size: 1rem;
+  padding: 10px 20px;
   border-radius: 5px;
   background-color: #0096be;
   color: white;
@@ -97,8 +110,7 @@ body {
   text-decoration: none;
   text-align: center;
   transition: background-color 0.3s ease;
-          margin-right: 10px;
-
+  margin-right: 10px;
 }
 
 .auth-buttons .login-btn {
@@ -109,24 +121,20 @@ body {
   background-color: #79973a;
 }
 
-.btn:hover {
-  background-color: #79973a;
-}
-
+ 
 @media (max-width: 1200px) {
   .header-container {
     padding: 0 10px;
   }
-  
+
   .main-menu {
-    display: none; 
+    display: none;
   }
-  
+
   .auth-buttons .btn {
-    padding: 8px 16px; 
+    padding: 8px 16px;
     font-size: 0.9rem;
     margin-right: 10px;
-
   }
 }
 
@@ -136,21 +144,20 @@ body {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .logo {
-    font-size: 1rem; 
+    font-size: 1rem;
   }
-  
+
   .main-menu {
-    display: none; 
+    display: none;
   }
-  
+
   .auth-buttons .btn {
     width: 100%;
     text-align: center;
     margin: 5px 0;
     padding: 10px;
     margin-right: 10px;
-
   }
 }

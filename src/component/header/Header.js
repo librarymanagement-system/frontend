@@ -1,12 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom"; 
 import "./Header.css"; 
+import logo from "../../assets/images/logo.png"; // Logo dosyasının yolu
 
 const Header = () => {
   return (
     <header className="homepage-header">
       <div className="header-container">
-        <h1 to="/" className="logo">Elysian Kitap Evi</h1>
+        <Link to="/" className="logo">
+          <img src={logo} alt="Elysian Kitap Evi Logo" />
+        </Link>
         <nav className="main-menu">
           <ul>
             <li className="menu-item">
@@ -66,7 +69,11 @@ const Header = () => {
             <li className="menu-item">
               <Link to="#">İletişim</Link>
             </li>
+            <li className="menu-item">
+              <Link to="#">Hakkımızda</Link>
+            </li>
           </ul>
+          
         </nav>
         <div className="auth-buttons">
           <Link to="/login" className="btn login-btn">

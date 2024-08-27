@@ -86,7 +86,7 @@ const BooksListPage = () => {
             <div className="book-details">
               <h2>{book.title}</h2>
               <p>
-                {formatList(book.authors, (a) => `${a.firsName} ${a.lastName}`)}
+                {formatList(book.authors, (a) => `${a.firstName} ${a.lastName}`)}
               </p>
               <p>{formatList(book.genres, (g) => g.name)}</p>
               <p className="publisher">
