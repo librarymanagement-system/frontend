@@ -4,15 +4,9 @@ import Modal from "react-modal";
 import { fetchUserLoans, returnBook } from "../../services/bookService.js";
 import "./BorrowedBooksPage.css";
 import Footer from "../../component/footer/Footer.js";
+import { LOAN_STATUSES } from "../../common/constant.js";
 
 Modal.setAppElement("#root");
-
-const LOAN_STATUSES = {
-  ACTIVE: "ACTIVE",
-  LATE: "LATE",
-  COMPLETED: "COMPLETED",
-  LOST: "LOST",
-};
 
 const BorrowedBooksPage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);

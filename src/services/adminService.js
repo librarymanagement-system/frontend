@@ -22,7 +22,7 @@ export const addBook = async (bookData) => {
     });
     return response.data;
   } catch (error) {
-    throw new Error("Kitap eklenirken bir hata oluştu.");
+    throw error;
   }
 };
 
