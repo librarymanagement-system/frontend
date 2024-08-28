@@ -8,10 +8,10 @@ import Footer from "../../component/footer/Footer.js";
 Modal.setAppElement("#root");
 
 const LOAN_STATUSES = {
-  ACTIVE: 'ACTIVE',
-  LATE: 'LATE',
-  COMPLETED: 'COMPLETED',
-  LOST: 'LOST'
+  ACTIVE: "ACTIVE",
+  LATE: "LATE",
+  COMPLETED: "COMPLETED",
+  LOST: "LOST",
 };
 
 const BorrowedBooksPage = () => {
@@ -41,7 +41,7 @@ const BorrowedBooksPage = () => {
         loans.forEach((loan) => {
           const bookData = {
             loanId: loan.id,
-            bookId: loan.book.id,
+            bookId: loan.book.bookId,
             title: loan.book.title,
             image: `data:image/jpeg;base64,${loan.book.base64image}`,
             borrowedDate: loan.loanDate,
@@ -51,9 +51,15 @@ const BorrowedBooksPage = () => {
             publisher: loan.book.publisher,
           };
 
-          if (loan.status === LOAN_STATUSES.ACTIVE || loan.status === LOAN_STATUSES.LATE) {
+          if (
+            loan.status === LOAN_STATUSES.ACTIVE ||
+            loan.status === LOAN_STATUSES.LATE
+          ) {
             current.push(bookData);
-          } else if (loan.status === LOAN_STATUSES.COMPLETED || loan.status === LOAN_STATUSES.LOST) {
+          } else if (
+            loan.status === LOAN_STATUSES.COMPLETED ||
+            loan.status === LOAN_STATUSES.LOST
+          ) {
             past.push(bookData);
           }
         });
@@ -114,7 +120,10 @@ const BorrowedBooksPage = () => {
           <div className="borrowed-books-list">
             {currentBorrowedBooks.length > 0 ? (
               currentBorrowedBooks.map((book) => (
-                <div key={book.bookId} className="book-item">
+                <div
+                  key={`${book.bookId}-${book.loanId}`}
+                  className="book-item"
+                >
                   <img
                     src={book.image}
                     alt={book.title}
@@ -150,7 +159,11 @@ const BorrowedBooksPage = () => {
           <div className="borrowed-books-list">
             {pastBorrowedBooks.length > 0 ? (
               pastBorrowedBooks.map((book) => (
-                <div key={book.bookId} className="book-item">
+                <div
+                  key={`${book.bookId}-${book.loanId}`}
+                  className="book-item"
+                >
+                  {" "}
                   <img
                     src={book.image}
                     alt={book.title}
@@ -192,7 +205,8 @@ const BorrowedBooksPage = () => {
       >
         <h2>Kitap İade İşlemi</h2>
         <p>
-          {selectedBook && `"${selectedBook.title}" kitabını iade etmek istediğinize emin misiniz?`}
+          {selectedBook &&
+            `"${selectedBook.title}" kitabını iade etmek istediğinize emin misiniz?`}
         </p>
         <button onClick={confirmReturn} className="modal-confirm-button">
           Onaylıyorum

@@ -12,19 +12,37 @@ const BookDetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const loadBookDetails = async () => {
+    setIsLoading(true);
+    setError(null);
     try {
       const data = await fetchBookDetails(id);
       setBook(data);
     } catch (error) {
-      setBook(null);
+      setError("Kitap bulunamadı.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     loadBookDetails();
   }, [id]);
+
+  if (isLoading) {
+    return <div>Yükleniyor...</div>; 
+  }
+
+  if (error) {
+    return <div>{error}</div>; 
+  }
+
+  if (!book) {
+    return <div>Kitap bulunamadı.</div>; 
+  }
 
   const handleBorrowClick = () => {
     setIsModalOpen(true);
