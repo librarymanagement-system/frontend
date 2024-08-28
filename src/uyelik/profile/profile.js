@@ -3,15 +3,16 @@ import Hamburger from "../../component/hamburger/hamburger.js";
 import api from "../../interceptor";
 import "./profile.css";
 import Footer from "../../component/footer/Footer.js";
-
+import {
+  getUserDetails,
+  updateUserDetails,
+} from "../../services/authService.js";
 
 const ProfilePage = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-  });
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -21,16 +22,12 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await api.get(`/api/users/getUserDetails/${userId}`);
-        const user = response.data;
-        setFormData({
-          name: user.name,
-          username: user.username,
-          email: user.email,
-          password: "", 
-        });
+        const user = await getUserDetails(userId);
+        setName(user.name);
+        setUsername(user.username);
+        setEmail(user.email);
+        setPassword("");
       } catch (error) {
-        console.error("Error fetching user details:", error);
         setErrorMessage("Kullanıcı bilgileri alınamadı.");
       }
     };
@@ -40,21 +37,31 @@ const ProfilePage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    switch (name) {
+      case "name":
+        setName(value);
+        break;
+      case "username":
+        setUsername(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.put(`/api/users/updateUser/${userId}`, formData);
-
+      await updateUserDetails(userId, { name, username, email, password });
       setSuccessMessage("Profil başarıyla güncellendi!");
       setErrorMessage("");
     } catch (error) {
-      console.error("Update error:", error);
       setErrorMessage("Profil güncellenirken bir hata oluştu.");
       setSuccessMessage("");
     }
@@ -74,7 +81,7 @@ const ProfilePage = () => {
               type="text"
               id="name"
               name="name"
-              value={formData.name}
+              value={name}
               onChange={handleChange}
               required
             />
@@ -85,7 +92,7 @@ const ProfilePage = () => {
               type="text"
               id="username"
               name="username"
-              value={formData.username}
+              value={username}
               onChange={handleChange}
               required
             />
@@ -96,7 +103,7 @@ const ProfilePage = () => {
               type="email"
               id="email"
               name="email"
-              value={formData.email}
+              value={email}
               onChange={handleChange}
               required
             />
@@ -107,7 +114,7 @@ const ProfilePage = () => {
               type="password"
               id="password"
               name="password"
-              value={formData.password}
+              value={password}
               onChange={handleChange}
               required
             />
@@ -118,7 +125,6 @@ const ProfilePage = () => {
         </form>
       </div>
       <Footer />
-
     </div>
   );
 };

@@ -9,6 +9,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactPaginate from "react-paginate";
 
+const formatList = (items, getName) => {
+  return (items || []).map(getName).join(", ");
+};
+
 const BooksListPage = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,7 +28,6 @@ const BooksListPage = () => {
       setBooks(content);
       setPageCount(Math.ceil(totalElements / 12));
     } catch (error) {
-      console.error(error.message);
       toast.error(error.message);
     }
   };
@@ -41,10 +44,7 @@ const BooksListPage = () => {
     if (isAuthenticated) {
       navigate(`/books/${id}`);
     } else {
-      toast.warning("Lütfen giriş yapın. Yönlendiriliyorsunuz...");
-      setTimeout(() => {
-        navigate("/login", { state: { from: `/books/${id}` } });
-      }, 1000);
+      navigate("/login", { state: { from: `/books/${id}` } });
     }
   };
 
@@ -67,7 +67,9 @@ const BooksListPage = () => {
             placeholder="Başlık, yazar, yayıncı veya tür girin"
           />
         </div>
-        <button className="se-area" onClick={() => loadBooks(0)}>Ara</button>
+        <button className="se-area" onClick={() => loadBooks(0)}>
+          Ara
+        </button>
       </div>
       <div className="books-grid">
         {books.map((book) => (
@@ -84,15 +86,16 @@ const BooksListPage = () => {
             <div className="book-details">
               <h2>{book.title}</h2>
               <p>
-                {(book.authors || [])
-                  .map((a) => `${a.firstName} ${a.lastName}`)
-                  .join(", ")}
+                {formatList(book.authors, (a) => `${a.firstName} ${a.lastName}`)}
               </p>
-              <p>{(book.genres || []).map((g) => g.name).join(", ")}</p>
+              <p>{formatList(book.genres, (g) => g.name)}</p>
               <p className="publisher">
-                {(book.publishers || []).map((p) => p.name).join(", ")}
+                {formatList(book.publishers, (p) => p.name)}
               </p>
-              <button onClick={() => handleDetailClick(book.id)} className="view-btn">
+              <button
+                onClick={() => handleDetailClick(book.id)}
+                className="view-btn"
+              >
                 Detay
               </button>
             </div>

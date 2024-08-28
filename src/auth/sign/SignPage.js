@@ -20,7 +20,6 @@ const SignUpPage = () => {
       toast.success("Başarıyla kayıt oldunuz! Giriş yapabilirsiniz.");
       navigate('/login');
     } catch (error) {
-      console.error('Kayıt hatası:', error);
       setErrorMessage('Kayıt yapılamadı. Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.');
       toast.error("Kayıt yapılamadı. Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.");
     }

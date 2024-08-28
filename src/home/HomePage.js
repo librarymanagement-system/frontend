@@ -7,6 +7,8 @@ import book2 from "../assets/images/book2.jpg";
 import book3 from "../assets/images/book3.jpg";
 import Header from "../component/header/Header.js";
 import Footer from "../component/footer/Footer.js";
+import Layout from '../Layout.js';
+
 
 const featuredBooks = [book1, book2, book3];
 
@@ -18,8 +20,9 @@ const HomePage = () => {
   };
 
   return (
+    <Layout>
+
     <div className="homepage">
-      <Header />
       <main className="homepage-main">
         <section className="hero">
           <div className="hero-content">
@@ -85,8 +88,9 @@ const HomePage = () => {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
+    </Layout>
+
   );
 };
 

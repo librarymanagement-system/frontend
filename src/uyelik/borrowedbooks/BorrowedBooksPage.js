@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Hamburger from "../../component/hamburger/hamburger.js";
 import Modal from "react-modal";
-import api from "../../interceptor";
+import { fetchUserLoans, returnBook } from "../../services/bookService.js";
 import "./BorrowedBooksPage.css";
 import Footer from "../../component/footer/Footer.js";
 
 Modal.setAppElement("#root");
+
+const LOAN_STATUSES = {
+  ACTIVE: "ACTIVE",
+  LATE: "LATE",
+  COMPLETED: "COMPLETED",
+  LOST: "LOST",
+};
 
 const BorrowedBooksPage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -13,6 +20,9 @@ const BorrowedBooksPage = () => {
   const [currentBorrowedBooks, setCurrentBorrowedBooks] = useState([]);
   const [pastBorrowedBooks, setPastBorrowedBooks] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const successMessage = "Kitap başarıyla iade edildi.";
+  const failureMessage = "İade başarısız.";
 
   const userId = localStorage.getItem("userId");
 
@@ -22,19 +32,16 @@ const BorrowedBooksPage = () => {
       return;
     }
 
-    const fetchUserLoans = async () => {
+    const fetchLoans = async () => {
       try {
-        const response = await api.get(`/api/users/getUserLoans/${userId}`);
-        console.log("Loans fetched:", response.data); //
-
-        const loans = response.data;
+        const loans = await fetchUserLoans(userId);
         const current = [];
         const past = [];
 
         loans.forEach((loan) => {
           const bookData = {
             loanId: loan.id,
-            bookId: loan.book.id,
+            bookId: loan.book.bookId,
             title: loan.book.title,
             image: `data:image/jpeg;base64,${loan.book.base64image}`,
             borrowedDate: loan.loanDate,
@@ -44,9 +51,15 @@ const BorrowedBooksPage = () => {
             publisher: loan.book.publisher,
           };
 
-          if (loan.status === "ACTIVE" || loan.status === "LATE") {
+          if (
+            loan.status === LOAN_STATUSES.ACTIVE ||
+            loan.status === LOAN_STATUSES.LATE
+          ) {
             current.push(bookData);
-          } else if (loan.status === "COMPLETED" || loan.status === "LOST") {
+          } else if (
+            loan.status === LOAN_STATUSES.COMPLETED ||
+            loan.status === LOAN_STATUSES.LOST
+          ) {
             past.push(bookData);
           }
         });
@@ -54,57 +67,42 @@ const BorrowedBooksPage = () => {
         setCurrentBorrowedBooks(current);
         setPastBorrowedBooks(past);
       } catch (error) {
-        console.error("Error fetching user loans:", error);
         setErrorMessage("Ödünç alınan kitaplar yüklenirken bir hata oluştu.");
       }
     };
 
-
-    fetchUserLoans();
+    fetchLoans();
   }, [userId]);
 
   const handleReturnBook = (book) => {
-    console.log("Book selected for return:", book);
-    console.log("Selected Book ID:", book.bookId);
     setSelectedBook(book);
     setModalIsOpen(true);
   };
-
 
   const confirmReturn = async () => {
     if (!selectedBook) return;
 
     try {
-        const userId = localStorage.getItem("userId");
-        if (!userId || !selectedBook.bookId) {
-            setErrorMessage("Invalid user or book ID.");
-            return;
-        }
+      const response = await returnBook(userId, selectedBook.bookId);
 
-        const response = await api.post(`/api/loans/return`, null, {
-          params: { userId, bookId: selectedBook.bookId }
-        });
+      if (response === successMessage) {
+        setCurrentBorrowedBooks((prevBooks) =>
+          prevBooks.filter((book) => book.bookId !== selectedBook.bookId)
+        );
+        setPastBorrowedBooks((prevBooks) => [
+          ...prevBooks,
+          { ...selectedBook, status: LOAN_STATUSES.COMPLETED },
+        ]);
 
-        console.log("API Response:", response.data);
-
-        if (response.data === "Kitap başarıyla iade edildi.") {
-            setCurrentBorrowedBooks(prevBooks => prevBooks.filter(book => book.bookId !== selectedBook.bookId));
-            setPastBorrowedBooks(prevBooks => [...prevBooks, { ...selectedBook, status: "COMPLETED" }]);
-
-            setModalIsOpen(false);
-            setSelectedBook(null);
-        } else {
-            setErrorMessage("İade başarısız.");
-        }
+        setModalIsOpen(false);
+        setSelectedBook(null);
+      } else {
+        setErrorMessage(failureMessage);
+      }
     } catch (error) {
-        console.error("İade başarısız.", error);
-        setErrorMessage("İade sırasında bir hata oluştu.");
+      setErrorMessage("İade sırasında bir hata oluştu.");
     }
   };
-
-
-
-
 
   const cancelReturn = () => {
     setModalIsOpen(false);
@@ -122,7 +120,10 @@ const BorrowedBooksPage = () => {
           <div className="borrowed-books-list">
             {currentBorrowedBooks.length > 0 ? (
               currentBorrowedBooks.map((book) => (
-                <div key={book.id} className="book-item">
+                <div
+                  key={`${book.bookId}-${book.loanId}`}
+                  className="book-item"
+                >
                   <img
                     src={book.image}
                     alt={book.title}
@@ -140,7 +141,7 @@ const BorrowedBooksPage = () => {
                       onClick={() => handleReturnBook(book)}
                       className="return-button"
                     >
-                      {book.status === "LATE"
+                      {book.status === LOAN_STATUSES.LATE
                         ? "Gecikmiş Kitabı İade Et"
                         : "İade Et"}
                     </button>
@@ -158,7 +159,11 @@ const BorrowedBooksPage = () => {
           <div className="borrowed-books-list">
             {pastBorrowedBooks.length > 0 ? (
               pastBorrowedBooks.map((book) => (
-                <div key={book.id} className="book-item">
+                <div
+                  key={`${book.bookId}-${book.loanId}`}
+                  className="book-item"
+                >
+                  {" "}
                   <img
                     src={book.image}
                     alt={book.title}
@@ -200,9 +205,8 @@ const BorrowedBooksPage = () => {
       >
         <h2>Kitap İade İşlemi</h2>
         <p>
-          {selectedBook
-            ? `"${selectedBook.title}" kitabını iade etmek istediğinize emin misiniz?`
-            : ""}
+          {selectedBook &&
+            `"${selectedBook.title}" kitabını iade etmek istediğinize emin misiniz?`}
         </p>
         <button onClick={confirmReturn} className="modal-confirm-button">
           Onaylıyorum

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./AdminPage.css";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   fetchBooks,
   addBook,
   removeBook,
-  exportBooks
+  exportBooks,
 } from "../services/adminService";
 
 const AdminPage = () => {
@@ -32,7 +32,6 @@ const AdminPage = () => {
         const data = await fetchBooks();
         setBooks(data.content || []);
       } catch (error) {
-        console.error("Fetch books error:", error);
         setError("Kitaplar yüklenirken bir hata oluştu.");
       } finally {
         setLoading(false);
@@ -49,7 +48,8 @@ const AdminPage = () => {
   }, []);
 
   const handleAddBook = async () => {
-    if (!bookName || !publisher || !author || !genre || !bookImage) {
+    const isHandleBook = !bookName || !publisher || !author || !genre || !bookImage;
+    if (isHandleBook) {
       setError("Lütfen tüm alanları doldurun.");
       return;
     }
@@ -57,18 +57,18 @@ const AdminPage = () => {
     const formData = new FormData();
     formData.append("title", bookName);
     formData.append("explanation", explanation);
-    author
-      .split(",")
-      .map((a) => a.trim())
-      .forEach((a) => formData.append("authors", a));
-    publisher
-      .split(",")
-      .map((p) => p.trim())
-      .forEach((p) => formData.append("publishers", p));
-    genre
-      .split(",")
-      .map((g) => g.trim())
-      .forEach((g) => formData.append("genres", g));
+
+    const appendMultipleValues = (key, values) => {
+      values
+        .split(",")
+        .map((value) => value.trim())
+        .forEach((value) => formData.append(key, value));
+    };
+
+    appendMultipleValues("authors", author);
+    appendMultipleValues("publishers", publisher);
+    appendMultipleValues("genres", genre);
+
     formData.append("file", bookImage);
 
     try {
@@ -77,7 +77,6 @@ const AdminPage = () => {
       clearInputs();
       toast.success("Kitap başarıyla eklendi!");
     } catch (error) {
-      console.error("Kitap ekleme hatası:", error);
       toast.error(error.message);
     }
   };
@@ -88,7 +87,6 @@ const AdminPage = () => {
       setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
       toast.success("Kitap başarıyla silindi!");
     } catch (error) {
-      console.error("Kitap kaldırma hatası:", error);
       toast.error("Kitap kaldırma başarısız.");
     }
   };
@@ -125,7 +123,6 @@ const AdminPage = () => {
         toast.error("Excel dosyası indirilemedi.");
       }
     } catch (error) {
-      console.error("Export error:", error);
       toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setExporting(false);
@@ -189,7 +186,11 @@ const AdminPage = () => {
         </div>
         <div className="book-list">
           <h2>Mevcut Kitaplar</h2>
-          <button onClick={handleExport} className="export-btn" disabled={exporting}>
+          <button
+            onClick={handleExport}
+            className="export-btn"
+            disabled={exporting}
+          >
             {exporting ? "Yükleniyor..." : "Kitapları Excel Olarak İndir"}
           </button>
           {loading ? (
@@ -224,6 +225,9 @@ const AdminPage = () => {
                         />
                       </td>
                       <td>{book.title}</td>
+
+
+
                       <td>
                         {(book.publishers || []).map((p) => p.name).join(", ")}
                       </td>
@@ -237,6 +241,9 @@ const AdminPage = () => {
                       </td>
                       <td>{book.explanation}</td>
                       <td>{book.status}</td>
+
+
+
                       <td>
                         <button
                           onClick={() => handleRemoveBook(book.id)}

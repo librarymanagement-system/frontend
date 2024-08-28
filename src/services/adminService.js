@@ -11,7 +11,7 @@ export const fetchBooks = async (page = 0, size = 28, sort = "id,asc") => {
     });
     return response.data;
   } catch (error) {
-    throw new Error("Kitaplar yüklenirken bir hata oluştu.");
+    throw error;
   }
 };
 
@@ -30,7 +30,7 @@ export const removeBook = async (bookId) => {
   try {
     await api.delete(`/api/books/${bookId}`);
   } catch (error) {
-    throw new Error("Kitap silinirken bir hata oluştu.");
+    throw error;
   }
 };
 
@@ -41,6 +41,7 @@ export const exportBooks = async () => {
     });
     return response;
   } catch (error) {
-    throw new Error("Kitapları Excel olarak export ederken bir hata oluştu.");
+    throw error;
+
   }
 };

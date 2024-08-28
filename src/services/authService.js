@@ -5,7 +5,8 @@ export const login = async (username, password) => {
     const response = await api.post('/api/authenticate', { username, password });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || error.message);
+    throw error;
+
   }
 };
 
@@ -14,7 +15,8 @@ export const signUp = async (name, email, username, password) => {
     const response = await api.post('/api/register', { name, email, username, password });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || error.message);
+    throw error;
+
   }
 };
 
@@ -23,7 +25,16 @@ export const getUserDetails = async (userId) => {
     const response = await api.get(`/api/users/getUserDetails/${userId}`);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || error.message);
+    throw error;
+
   }
 };
 
+export const updateUserDetails = async (userId, userDetails) => {
+  try {
+    const response = await api.put(`/api/users/updateUser/${userId}`, userDetails);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

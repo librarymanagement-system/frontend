@@ -15,7 +15,8 @@ export const fetchBooks = async (searchTerm, page = 0) => {
       totalElements: response.data.totalElements,
     };
   } catch (error) {
-    throw new Error("Kitaplar yüklenirken bir hata oluştu.");
+    throw error;
+
   }
 };
 
@@ -24,7 +25,7 @@ export const fetchBookDetails = async (id) => {
     const response = await api.get(`/api/books/getBookById/${id}`);
     return response.data;
   } catch (error) {
-    throw new Error("Kitap detayları fetch hatası.");
+    throw error;
   }
 };
 
@@ -36,6 +37,26 @@ export const borrowBook = async (userId, token, bookId) => {
     });
     return response;
   } catch (error) {
-    throw new Error("Kitap ödünç alma hatası.");
+    throw error;
+  }
+};
+
+export const fetchUserLoans = async (userId) => {
+  try {
+    const response = await api.get(`/api/users/getUserLoans/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const returnBook = async (userId, bookId) => {
+  try {
+    const response = await api.post(`/api/loans/return`, null, {
+      params: { userId, bookId },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 };
