@@ -40,3 +40,23 @@ export const borrowBook = async (userId, token, bookId) => {
     throw error;
   }
 };
+
+export const fetchUserLoans = async (userId) => {
+  try {
+    const response = await api.get(`/api/users/getUserLoans/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const returnBook = async (userId, bookId) => {
+  try {
+    const response = await api.post(`/api/loans/return`, null, {
+      params: { userId, bookId },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

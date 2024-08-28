@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Hamburger from "../../component/hamburger/hamburger.js";
 import Modal from "react-modal";
-import api from "../../interceptor";
+import { fetchUserLoans, returnBook } from "../../services/bookService.js";
 import "./BorrowedBooksPage.css";
 import Footer from "../../component/footer/Footer.js";
 
@@ -32,10 +32,9 @@ const BorrowedBooksPage = () => {
       return;
     }
 
-    const fetchUserLoans = async () => {
+    const fetchLoans = async () => {
       try {
-        const response = await api.get(`/api/users/getUserLoans/${userId}`);
-        const loans = response.data;
+        const loans = await fetchUserLoans(userId);
         const current = [];
         const past = [];
 
@@ -66,7 +65,7 @@ const BorrowedBooksPage = () => {
       }
     };
 
-    fetchUserLoans();
+    fetchLoans();
   }, [userId]);
 
   const handleReturnBook = (book) => {
@@ -78,17 +77,9 @@ const BorrowedBooksPage = () => {
     if (!selectedBook) return;
 
     try {
-      const userId = localStorage.getItem("userId");
-      if (!userId || !selectedBook.bookId) {
-        setErrorMessage("Invalid user or book ID.");
-        return;
-      }
+      const response = await returnBook(userId, selectedBook.bookId);
 
-      const response = await api.post(`/api/loans/return`, null, {
-        params: { userId, bookId: selectedBook.bookId },
-      });
-
-      if (response.data === successMessage) {
+      if (response === successMessage) {
         setCurrentBorrowedBooks((prevBooks) =>
           prevBooks.filter((book) => book.bookId !== selectedBook.bookId)
         );
@@ -123,7 +114,7 @@ const BorrowedBooksPage = () => {
           <div className="borrowed-books-list">
             {currentBorrowedBooks.length > 0 ? (
               currentBorrowedBooks.map((book) => (
-                <div key={book.id} className="book-item">
+                <div key={book.bookId} className="book-item">
                   <img
                     src={book.image}
                     alt={book.title}
@@ -159,7 +150,7 @@ const BorrowedBooksPage = () => {
           <div className="borrowed-books-list">
             {pastBorrowedBooks.length > 0 ? (
               pastBorrowedBooks.map((book) => (
-                <div key={book.id} className="book-item">
+                <div key={book.bookId} className="book-item">
                   <img
                     src={book.image}
                     alt={book.title}

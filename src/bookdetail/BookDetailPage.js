@@ -5,6 +5,7 @@ import "./BookDetailPage.css";
 import Footer from "../component/footer/Footer.js";
 import { ToastContainer, toast } from "react-toastify";
 
+
 const BookDetailPage = () => {
   const { id } = useParams();
   const [book, setBook] = useState(null);
