@@ -3,6 +3,10 @@ import Hamburger from "../../component/hamburger/hamburger.js";
 import api from "../../interceptor";
 import "./profile.css";
 import Footer from "../../component/footer/Footer.js";
+import {
+  getUserDetails,
+  updateUserDetails,
+} from "../../services/authService.js";
 
 const ProfilePage = () => {
   const [name, setName] = useState("");
@@ -18,8 +22,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await api.get(`/api/users/getUserDetails/${userId}`);
-        const user = response.data;
+        const user = await getUserDetails(userId);
         setName(user.name);
         setUsername(user.username);
         setEmail(user.email);
@@ -55,13 +58,7 @@ const ProfilePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.put(`/api/users/updateUser/${userId}`, {
-        name,
-        username,
-        email,
-        password,
-      });
-
+      await updateUserDetails(userId, { name, username, email, password });
       setSuccessMessage("Profil başarıyla güncellendi!");
       setErrorMessage("");
     } catch (error) {
