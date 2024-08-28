@@ -73,16 +73,16 @@ h2 {
 
 .books-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Her kartın minimum 250px genişliğinde olmasını sağlar */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
   gap: 20px;
-  padding: 20px; /* Kenar boşluklarını artırıyoruz */
+  padding: 20px; 
   margin: 0 auto;
-  max-width: 1200px; /* Maksimum genişlik sınırlanır */
+  max-width: 1200px; 
 }
 
 .book-card {
   border: 1px solid #ddd;
-  padding: 16px; /* İç boşlukları artırıyoruz */
+  padding: 16px; 
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s, box-shadow 0.3s;
@@ -96,8 +96,8 @@ h2 {
 
 .book-card img {
   width: 100%;
-  max-width: 300px; /* Görselin maksimum genişliği */
-  height: auto; /* Yükseklik korunur */
+  max-width: 300px; 
+  height: auto; 
   border-bottom: 2px solid #ddd;
   margin-bottom: 15px;
 }
@@ -111,28 +111,28 @@ h2 {
 .book-card p {
   font-size: 1rem;
   color: #666;
-  margin: 8px 0; /* Metin boşluklarını daha dengeli hale getiriyoruz */
+  margin: 8px 0; 
 }
 
 .book-card .publisher {
   background-color: #007cb5a5;
   color: white;
-  padding: 4px 8px; /* Daha belirgin bir görünüm için padding artırıldı */
+  padding: 4px 8px; 
   border-radius: 4px;
-  width: 100%; /* Genişliği sabitliyoruz */
-  text-align: center; /* Metin ortalanıyor */
-  margin-top: auto; /* Yayınevi ismi kartın en altında yer alacak */
+  width: 100%; 
+  text-align: center; 
+  margin-top: auto; 
 }
 
 .book-card button {
   background-color: #0096be;
   color: white;
   border: none;
-  padding: 10px 20px; /* Butonun boyutu artırıldı */
+  padding: 10px 20px; 
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
-  font-size: 1rem; /* Buton yazı boyutu artırıldı */
+  font-size: 1rem;
 }
 
 .book-card:hover {
@@ -219,28 +219,28 @@ h2 {
 
 @media (max-width: 1200px) {
   .books-grid {
-    grid-template-columns: repeat(3, 1fr); /* Daha küçük ekranlarda 3 sütuna düşer */
+    grid-template-columns: repeat(3, 1fr); 
   }
 }
 
 @media (max-width: 992px) {
   .books-grid {
-    grid-template-columns: repeat(2, 1fr); /* Tabletlerde 2 sütuna düşer */
+    grid-template-columns: repeat(2, 1fr); 
   }
 }
 
 @media (max-width: 768px) {
   .books-grid {
-    grid-template-columns: 1fr; /* Mobilde tek sütun */
-    padding: 10px; /* Mobil için kenar boşlukları ayarlandı */
+    grid-template-columns: 1fr; 
+    padding: 10px; 
   }
 
   .book-card {
-    padding: 12px; /* Kart iç boşlukları mobilde azaltıldı */
+    padding: 12px; 
   }
 
   .book-card img {
-    width: 100%; /* Görsel genişliği mobilde tam olarak kullanılıyor */
-    height: auto; /* Yükseklik korunuyor */
+    width: 100%; 
+    height: auto; 
   }
 }

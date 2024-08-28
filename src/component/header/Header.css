@@ -32,18 +32,18 @@ body {
 }
 
 .logo {
-  margin-right: 0; /* Sağdaki boşluğu sıfırlayın */
-  padding: 0; /* Fazladan padding varsa kaldırın */
+  margin-right: 0; 
+  padding: 0;
 }
 
 .logo img {
-  height: 100px; /* Logo yüksekliğini ayarlayın */
-  width: auto; /* Genişliği otomatik ayarlayın */
+  height: 100px;
+  width: auto; 
 }
 
 nav.main-menu {
-  flex-grow: 1; /* Nav elemanının genişlemesini sağlayın */
-  text-align: center; /* Nav elemanını ortalayın */
+  flex-grow: 1; 
+  text-align: center; 
 }
 
 .main-menu ul {
@@ -94,7 +94,7 @@ nav.main-menu {
   font-size: 0.8rem;
 }
 .auth-buttons {
-  margin-left: 0; /* Soldaki boşluğu sıfırlayın */
+  margin-left: 0;
 }
 .auth-buttons .btn {
   font-size: 1rem;
