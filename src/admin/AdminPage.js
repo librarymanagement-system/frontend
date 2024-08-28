@@ -9,7 +9,6 @@ import {
   removeBook,
   exportBooks,
 } from "../services/adminService";
-import { formatList, formatFullNameList } from "../global.js";
 
 const AdminPage = () => {
   const [bookName, setBookName] = useState("");
@@ -226,11 +225,25 @@ const AdminPage = () => {
                         />
                       </td>
                       <td>{book.title}</td>
-                      <td>{formatList(book.publishers, 'name')}</td>
-                    <td>{formatFullNameList(book.authors)}</td>
-                    <td>{formatList(book.genres, 'name')}</td>
-                    <td>{book.explanation}</td>
-                    <td>{book.status}</td>
+
+
+
+                      <td>
+                        {(book.publishers || []).map((p) => p.name).join(", ")}
+                      </td>
+                      <td>
+                        {(book.authors || [])
+                          .map((a) => `${a.firstName} ${a.lastName}`)
+                          .join(", ")}
+                      </td>
+                      <td>
+                        {(book.genres || []).map((g) => g.name).join(", ")}
+                      </td>
+                      <td>{book.explanation}</td>
+                      <td>{book.status}</td>
+
+
+
                       <td>
                         <button
                           onClick={() => handleRemoveBook(book.id)}
